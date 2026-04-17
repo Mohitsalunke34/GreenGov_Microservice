@@ -1,6 +1,9 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import com.example.demo.dto.RegisterRequestDTO;
+import com.example.demo.dto.UserProfileDTO;
 
 public interface AuthService {
 
@@ -9,4 +12,6 @@ public interface AuthService {
 	String adminLogin(String username, String password);
 
 	void register(RegisterRequestDTO request);
+
+	List<UserProfileDTO> getUserByPrimaryRole();
 }

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.RegisterRequestDTO;
+import com.example.demo.dto.UserProfileDTO;
 import com.example.demo.model.Admin;
 import com.example.demo.model.Enums.PrimaryRole;
 import com.example.demo.model.Enums.ProfileStatus;
@@ -117,5 +118,20 @@ public class AuthServiceImpl implements AuthService {
 		Map<String, Object> claims = Map.of("roles", List.of("ROLE_ADMIN"), "authorities", List.of("ADMIN"));
 
 		return jwtService.generateToken(username, claims);
+	}
+
+	@Override
+	public List<UserProfileDTO> getUserByPrimaryRole() {
+
+		// Include only CITIZEN and BUSINESS
+		List<PrimaryRole> allowedRoles = List.of(PrimaryRole.CITIZEN, PrimaryRole.BUSINESS_OWNER);
+
+		List<UserAccount> users = userRepo.findByPrimaryRoleIn(allowedRoles);
+
+		return users.stream()
+				.map(user -> UserProfileDTO.builder().id(user.getId()).username(user.getUsername())
+						.email(user.getEmail()).primaryRole(user.getPrimaryRole()).active(user.isActive())
+						.createdAt(user.getCreatedAt()).lastLoginAt(user.getLastLoginAt()).build())
+				.toList();
 	}
 }
