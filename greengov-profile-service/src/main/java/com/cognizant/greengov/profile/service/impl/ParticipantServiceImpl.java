@@ -14,6 +14,7 @@ import com.cognizant.greengov.profile.dto.DocumentUploadRequestDto;
 import com.cognizant.greengov.profile.dto.EntityProfileResponseDto;
 import com.cognizant.greengov.profile.dto.ParticipantRegistrationRequestDto;
 import com.cognizant.greengov.profile.dto.ParticipantUpdateRequestDto;
+import com.cognizant.greengov.profile.dto.UserProfileDTO;
 import com.cognizant.greengov.profile.dto.VerificationStatusUpdateDto;
 import com.cognizant.greengov.profile.exception.ResourceNotFoundException;
 import com.cognizant.greengov.profile.model.VerificationStatus;
@@ -30,134 +31,133 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ParticipantServiceImpl implements ParticipantService {
 
-    private final ParticipantProfileRepository profileRepository;
-    private final DocumentRepository documentRepository;
-    private final UserClient userClient;
+	private final ParticipantProfileRepository profileRepository;
+	private final DocumentRepository documentRepository;
+	private final UserClient userClient;
 
-    @Override
-    @Transactional
-    public EntityProfileResponseDto registerParticipant(ParticipantRegistrationRequestDto request) {
-        
-        try {
-            userClient.getUserById(request.getUserId());
-        } catch (FeignException.NotFound e) {
-            throw new ResourceNotFoundException("User not found in external User Service with ID: " + request.getUserId());
-        }
+	@Override
+	@Transactional
+	public EntityProfileResponseDto registerParticipant(ParticipantRegistrationRequestDto request) {
 
-        ParticipantProfile profile = ParticipantProfile.builder()
-                .userId(request.getUserId())
-                .entityType(request.getEntityType())
-                .legalName(request.getLegalName())
-                .address(request.getAddress())
-                .contactInfoJson(request.getContactInfo())
-                .status(VerificationStatus.PENDING)
-                .documents(new ArrayList<>())
-                .build();
+		List<UserProfileDTO> users;
+		try {
+			users = userClient.getUserByPrimaryRole();
+		} catch (FeignException e) {
+//			throw new ResourceNotFoundException("Unable to communicate with User Service");
+			throw e;
 
-        ParticipantProfile savedProfile = profileRepository.save(profile);
+		}
 
-        return mapToProfileResponseDto(savedProfile);
-    }
+		// ✅ Just validate user existence & role
+		users.stream().filter(u -> u.getId().equals(request.getUserId())).findFirst()
+				.orElseThrow(() -> new ResourceNotFoundException(
+						"User not found or not eligible (Citizen/Business) with ID: " + request.getUserId()));
 
-    @Override
-    public EntityProfileResponseDto getParticipantDetails(Long id) {
-        ParticipantProfile profile = profileRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + id));
-                
-        return mapToProfileResponseDto(profile);
-    }
+		ParticipantProfile profile = ParticipantProfile.builder().userId(request.getUserId())
+				.entityType(request.getEntityType()).legalName(request.getLegalName()).address(request.getAddress())
+				.contactInfoJson(request.getContactInfo()).status(VerificationStatus.PENDING)
+				.documents(new ArrayList<>()).build();
 
-    @Override
-    @Transactional
-    public EntityProfileResponseDto updateParticipantDetails(Long id, ParticipantUpdateRequestDto request) {
-        ParticipantProfile profile = profileRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + id));
+		ParticipantProfile savedProfile = profileRepository.save(profile);
 
-        profile.setLegalName(request.getLegalName());
-        profile.setAddress(request.getAddress());
-        profile.setContactInfoJson(request.getContactInfo());
+		return mapToProfileResponseDto(savedProfile);
+	}
 
-        ParticipantProfile updatedProfile = profileRepository.save(profile);
-        
-        return mapToProfileResponseDto(updatedProfile);
-    }
+	@Override
+	public EntityProfileResponseDto getParticipantDetails(Long id) {
+		ParticipantProfile profile = profileRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + id));
 
-    @Override
-    @Transactional
-    public DocumentResponseDto uploadDocument(Long profileId, DocumentUploadRequestDto request) {
-        
-        ParticipantProfile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + profileId));
+		return mapToProfileResponseDto(profile);
+	}
 
-        Document document = Document.builder()
-                .documentType(request.getDocumentType().name())
-                .fileUrl("simulated/path/to/" + request.getDocumentType().name() + "_" + System.currentTimeMillis() + ".pdf")
-                .profile(profile)
-                .verificationStatus(VerificationStatus.PENDING)
-                .build();
+	@Override
+	@Transactional
+	public EntityProfileResponseDto updateParticipantDetails(Long id, ParticipantUpdateRequestDto request) {
+		ParticipantProfile profile = profileRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + id));
 
-        Document savedDocument = documentRepository.save(document);
+		profile.setLegalName(request.getLegalName());
+		profile.setAddress(request.getAddress());
+		profile.setContactInfoJson(request.getContactInfo());
 
-        return mapToDocumentResponseDto(savedDocument);
-    }
+		ParticipantProfile updatedProfile = profileRepository.save(profile);
 
-    @Override
-    public List<DocumentResponseDto> getParticipantDocuments(Long profileId) {
-        ParticipantProfile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + profileId));
+		return mapToProfileResponseDto(updatedProfile);
+	}
 
-        return profile.getDocuments().stream()
-                .map(this::mapToDocumentResponseDto)
-                .collect(Collectors.toList());
-    }
+	@Override
+	@Transactional
+	public DocumentResponseDto uploadDocument(Long profileId, DocumentUploadRequestDto request) {
 
-    @Override
-    @Transactional
-    public void updateParticipantStatus(Long profileId, VerificationStatusUpdateDto statusDto) {
-        ParticipantProfile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + profileId));
+		ParticipantProfile profile = profileRepository.findById(profileId)
+				.orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + profileId));
 
-        profile.setStatus(statusDto.getStatus());
-        profileRepository.save(profile);
-    }
+		Document document = Document
+				.builder().documentType(request.getDocumentType().name()).fileUrl("simulated/path/to/"
+						+ request.getDocumentType().name() + "_" + System.currentTimeMillis() + ".pdf")
+				.profile(profile).verificationStatus(VerificationStatus.PENDING).build();
 
-    @Override
-    @Transactional
-    public void updateDocumentStatus(Long documentId, VerificationStatusUpdateDto statusDto) {
-        Document document = documentRepository.findById(documentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Document not found with ID: " + documentId));
+		Document savedDocument = documentRepository.save(document);
 
-        document.setVerificationStatus(statusDto.getStatus());
-        documentRepository.save(document);
-    }
+		return mapToDocumentResponseDto(savedDocument);
+	}
 
-    private EntityProfileResponseDto mapToProfileResponseDto(ParticipantProfile profile) {
-        EntityProfileResponseDto response = new EntityProfileResponseDto();
-        response.setId(profile.getId());
-        response.setLegalName(profile.getLegalName());
-        response.setEntityType(profile.getEntityType());
-        response.setAddress(profile.getAddress());
-        response.setContactInfo(profile.getContactInfoJson());
-        response.setStatus(profile.getStatus());
-        
-        if (profile.getDocuments() != null) {
-            response.setDocuments(profile.getDocuments().stream()
-                    .map(this::mapToDocumentResponseDto)
-                    .collect(Collectors.toList()));
-        } else {
-            response.setDocuments(new ArrayList<>());
-        }
-        
-        return response;
-    }
+	@Override
+	public List<DocumentResponseDto> getParticipantDocuments(Long profileId) {
+		ParticipantProfile profile = profileRepository.findById(profileId)
+				.orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + profileId));
 
-    private DocumentResponseDto mapToDocumentResponseDto(Document document) {
-        DocumentResponseDto response = new DocumentResponseDto();
-        response.setId(document.getId());
-        response.setDocumentType(com.cognizant.greengov.profile.model.DocumentType.valueOf(document.getDocumentType()));
-        response.setFileUri(document.getFileUrl());
-        response.setUploadedDate(LocalDateTime.now());
-        response.setVerificationStatus(document.getVerificationStatus() != null ? document.getVerificationStatus() : VerificationStatus.PENDING);
-        return response;
-    }
+		return profile.getDocuments().stream().map(this::mapToDocumentResponseDto).collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional
+	public void updateParticipantStatus(Long profileId, VerificationStatusUpdateDto statusDto) {
+		ParticipantProfile profile = profileRepository.findById(profileId)
+				.orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + profileId));
+
+		profile.setStatus(statusDto.getStatus());
+		profileRepository.save(profile);
+	}
+
+	@Override
+	@Transactional
+	public void updateDocumentStatus(Long documentId, VerificationStatusUpdateDto statusDto) {
+		Document document = documentRepository.findById(documentId)
+				.orElseThrow(() -> new ResourceNotFoundException("Document not found with ID: " + documentId));
+
+		document.setVerificationStatus(statusDto.getStatus());
+		documentRepository.save(document);
+	}
+
+	private EntityProfileResponseDto mapToProfileResponseDto(ParticipantProfile profile) {
+		EntityProfileResponseDto response = new EntityProfileResponseDto();
+		response.setId(profile.getId());
+		response.setLegalName(profile.getLegalName());
+		response.setEntityType(profile.getEntityType());
+		response.setAddress(profile.getAddress());
+		response.setContactInfo(profile.getContactInfoJson());
+		response.setStatus(profile.getStatus());
+
+		if (profile.getDocuments() != null) {
+			response.setDocuments(
+					profile.getDocuments().stream().map(this::mapToDocumentResponseDto).collect(Collectors.toList()));
+		} else {
+			response.setDocuments(new ArrayList<>());
+		}
+
+		return response;
+	}
+
+	private DocumentResponseDto mapToDocumentResponseDto(Document document) {
+		DocumentResponseDto response = new DocumentResponseDto();
+		response.setId(document.getId());
+		response.setDocumentType(com.cognizant.greengov.profile.model.DocumentType.valueOf(document.getDocumentType()));
+		response.setFileUri(document.getFileUrl());
+		response.setUploadedDate(LocalDateTime.now());
+		response.setVerificationStatus(document.getVerificationStatus() != null ? document.getVerificationStatus()
+				: VerificationStatus.PENDING);
+		return response;
+	}
 }

@@ -28,52 +28,50 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ParticipantController {
 
-    private final ParticipantService participantService;
+	private final ParticipantService participantService;
 
-    @PostMapping("/register")
-    public ResponseEntity<EntityProfileResponseDto> registerParticipant(
-            @Valid @RequestBody ParticipantRegistrationRequestDto request) {
-        return new ResponseEntity<>(participantService.registerParticipant(request), HttpStatus.CREATED);
-    }
+	@PostMapping("/register")
+	public ResponseEntity<EntityProfileResponseDto> registerParticipant(
+			@Valid @RequestBody ParticipantRegistrationRequestDto request) {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EntityProfileResponseDto> getParticipantDetails(@PathVariable Long id) {
-        return ResponseEntity.ok(participantService.getParticipantDetails(id));
-    }
+		EntityProfileResponseDto response = participantService.registerParticipant(request);
 
-    @PutMapping("/{id}")
-    public ResponseEntity<EntityProfileResponseDto> updateParticipantDetails(
-            @PathVariable Long id,
-            @Valid @RequestBody ParticipantUpdateRequestDto request) {
-        return ResponseEntity.ok(participantService.updateParticipantDetails(id, request));
-    }
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
+	}
 
-    @PostMapping("/{id}/documents")
-    public ResponseEntity<DocumentResponseDto> uploadDocument(
-            @PathVariable Long id,
-            @Valid @RequestBody DocumentUploadRequestDto request) {
-        return new ResponseEntity<>(participantService.uploadDocument(id, request), HttpStatus.CREATED);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<EntityProfileResponseDto> getParticipantDetails(@PathVariable Long id) {
+		return ResponseEntity.ok(participantService.getParticipantDetails(id));
+	}
 
-    @GetMapping("/{id}/documents")
-    public ResponseEntity<List<DocumentResponseDto>> getParticipantDocuments(@PathVariable Long id) {
-        return ResponseEntity.ok(participantService.getParticipantDocuments(id));
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity<EntityProfileResponseDto> updateParticipantDetails(@PathVariable Long id,
+			@Valid @RequestBody ParticipantUpdateRequestDto request) {
+		return ResponseEntity.ok(participantService.updateParticipantDetails(id, request));
+	}
 
-    @PutMapping("/{id}/verification-status")
-    public ResponseEntity<Void> updateParticipantStatus(
-            @PathVariable Long id,
-            @Valid @RequestBody VerificationStatusUpdateDto statusDto) {
-        participantService.updateParticipantStatus(id, statusDto);
-        return ResponseEntity.noContent().build();
-    }
+	@PostMapping("/{id}/documents")
+	public ResponseEntity<DocumentResponseDto> uploadDocument(@PathVariable Long id,
+			@Valid @RequestBody DocumentUploadRequestDto request) {
+		return new ResponseEntity<>(participantService.uploadDocument(id, request), HttpStatus.CREATED);
+	}
 
-    @PutMapping("/{participantId}/documents/{documentId}/status")
-    public ResponseEntity<Void> updateDocumentStatus(
-            @PathVariable Long participantId,
-            @PathVariable Long documentId,
-            @Valid @RequestBody VerificationStatusUpdateDto statusDto) {
-        participantService.updateDocumentStatus(documentId, statusDto);
-        return ResponseEntity.ok().build();
-    }
+	@GetMapping("/{id}/documents")
+	public ResponseEntity<List<DocumentResponseDto>> getParticipantDocuments(@PathVariable Long id) {
+		return ResponseEntity.ok(participantService.getParticipantDocuments(id));
+	}
+
+	@PutMapping("/{id}/verification-status")
+	public ResponseEntity<Void> updateParticipantStatus(@PathVariable Long id,
+			@Valid @RequestBody VerificationStatusUpdateDto statusDto) {
+		participantService.updateParticipantStatus(id, statusDto);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping("/{participantId}/documents/{documentId}/status")
+	public ResponseEntity<Void> updateDocumentStatus(@PathVariable Long participantId, @PathVariable Long documentId,
+			@Valid @RequestBody VerificationStatusUpdateDto statusDto) {
+		participantService.updateDocumentStatus(documentId, statusDto);
+		return ResponseEntity.ok().build();
+	}
 }
