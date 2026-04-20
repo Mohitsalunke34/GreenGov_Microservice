@@ -30,6 +30,7 @@ public class OfficerApprovalServiceImpl implements OfficerApprovalService {
 
 		profile.setStatus(ProfileStatus.APPROVED);
 		profile.setApprovedAt(LocalDateTime.now());
+
 		profile.getUser().setActive(true);
 
 		repo.save(profile);
