@@ -19,6 +19,10 @@ public interface ProgramClient {
 
     @GetMapping("/api/programs/fetchById/{id}")
     ProgramDTO getProgramById(@PathVariable("id") Long id);
+    
+//    @GetMapping("/api/programs/fetchById/{id}")
+//    List<ProgramDTO> 
+    
 
     @PutMapping("/api/programs/{id}/deduct-budget")
     void deductProgramBudget(

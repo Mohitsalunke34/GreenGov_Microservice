@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -131,4 +132,15 @@ public class IncentiveController {
 
         return ResponseEntity.ok(deleted);
     }
+    
+
+    /**
+      * Reporting & Analytics endpoint
+      * Used by Reports microservice
+      */
+     @GetMapping("/report-metrics")
+     public Map<String, Object> getIncentiveReportMetrics() {
+         return incentiveService.getIncentiveReportMetrics();
+     }
+
 }

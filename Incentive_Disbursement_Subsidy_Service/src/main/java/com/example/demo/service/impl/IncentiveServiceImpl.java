@@ -2,7 +2,9 @@ package com.example.demo.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import com.example.demo.dto.IncentiveResponseDTO;
 import com.example.demo.dto.ProgramDTO;
 import com.example.demo.model.Incentive;
 import com.example.demo.modelMapper.IncentiveMapper;
+import com.example.demo.repo.DisbursementRepository;
 import com.example.demo.repo.IncentiveRepository;
 import com.example.demo.service.IncentiveService;
 
@@ -29,6 +32,7 @@ public class IncentiveServiceImpl implements IncentiveService {
     private final IncentiveRepository incentiveRepo;
     private final ProgramClient programClient;
     private final UserClient userClient;
+    private final DisbursementRepository disbursementRepo;
 
     @Override
     @Transactional
@@ -146,4 +150,24 @@ public class IncentiveServiceImpl implements IncentiveService {
                 .map(IncentiveMapper::toDTO)
                 .toList();
     }
+    
+
+    @Override
+       public Map<String, Object> getIncentiveReportMetrics() {
+
+           long totalIncentives = incentiveRepo.count();
+           long totalDisbursements = disbursementRepo.count();
+
+           Double totalDisbursedAmount =
+        		   disbursementRepo.getTotalDisbursedAmount();
+
+           Map<String, Object> metrics = new HashMap<>();
+           metrics.put("totalIncentives", totalIncentives);
+           metrics.put("totalDisbursements", totalDisbursements);
+           metrics.put("totalAmountDisbursed",
+                   totalDisbursedAmount != null ? totalDisbursedAmount : 0.0);
+
+           return metrics;
+       }
+
 }
