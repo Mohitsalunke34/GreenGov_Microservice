@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.RegisterRequestDTO;
+import com.example.demo.dto.UserProfileDTO;
 import com.example.demo.model.Admin;
 import com.example.demo.model.Enums.PrimaryRole;
 import com.example.demo.model.Enums.ProfileStatus;
@@ -40,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
 		this.officerRepo = officerRepo;
 	}
 
+	// ---------------- REGISTER ----------------
 	@Override
 	@Transactional
 	public void register(RegisterRequestDTO request) {
@@ -60,7 +62,6 @@ public class AuthServiceImpl implements AuthService {
 
 		userRepo.save(user);
 
-		// Officer-specific logic
 		if (request.getPrimaryRole() == PrimaryRole.OFFICER) {
 
 			if (request.getOfficerType() == null) {
@@ -75,23 +76,31 @@ public class AuthServiceImpl implements AuthService {
 		}
 	}
 
+	// ---------------- USER LOGIN ----------------
 	@Override
 	public String userLogin(String username, String password) {
 
 		UserAccount user = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 
-		if (!user.isActive() || !encoder.matches(password, user.getPasswordHash())) {
-			throw new RuntimeException("Invalid credentials");
+		if (!encoder.matches(password, user.getPasswordHash())) {
+			throw new RuntimeException("Invalid username or password");
+		}
+
+		if (!user.isActive()) {
+			throw new RuntimeException("Account inactive. Await admin approval.");
 		}
 
 		List<String> roles = List.of("ROLE_" + user.getPrimaryRole().name());
 		List<String> authorities = new ArrayList<>();
 
 		if (user.getPrimaryRole() == PrimaryRole.OFFICER) {
+
 			OfficerProfile profile = user.getOfficerProfile();
+
 			if (profile == null || profile.getStatus() != ProfileStatus.APPROVED) {
 				throw new RuntimeException("Officer not approved");
 			}
+
 			authorities.add(profile.getOfficerType().name());
 		}
 
@@ -105,17 +114,36 @@ public class AuthServiceImpl implements AuthService {
 		return jwtService.generateToken(username, claims);
 	}
 
+	// ---------------- ADMIN LOGIN ----------------
 	@Override
 	public String adminLogin(String username, String password) {
 
 		Admin admin = adminRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("Admin not found"));
 
-		if (!admin.isActive() || !encoder.matches(password, admin.getPasswordHash())) {
+		// Plain-text password comparison
+		if (!password.equals(admin.getPasswordHash())) {
 			throw new RuntimeException("Invalid admin credentials");
+		}
+
+		if (!admin.isActive()) {
+			throw new RuntimeException("Admin account inactive");
 		}
 
 		Map<String, Object> claims = Map.of("roles", List.of("ROLE_ADMIN"), "authorities", List.of("ADMIN"));
 
 		return jwtService.generateToken(username, claims);
+	}
+
+	// ---------------- FETCH USERS ----------------
+	@Override
+	public List<UserProfileDTO> getUserByPrimaryRole() {
+
+		List<PrimaryRole> allowedRoles = List.of(PrimaryRole.CITIZEN, PrimaryRole.BUSINESS_OWNER);
+
+		return userRepo.findByPrimaryRoleIn(allowedRoles).stream()
+				.map(user -> UserProfileDTO.builder().id(user.getId()).username(user.getUsername())
+						.email(user.getEmail()).primaryRole(user.getPrimaryRole()).active(user.isActive())
+						.createdAt(user.getCreatedAt()).lastLoginAt(user.getLastLoginAt()).build())
+				.toList();
 	}
 }

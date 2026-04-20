@@ -29,7 +29,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth
 
 						// ✅ ALWAYS allow actuator
-						.requestMatchers("/actuator/**").permitAll()
+						.requestMatchers("/actuator/**").permitAll().requestMatchers("/api/participants/**").permitAll()
 
 						// ✅ PUBLIC AUTH ENDPOINTS (INCLUDING REGISTER)
 						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/auth/login").permitAll()
@@ -38,6 +38,15 @@ public class SecurityConfig {
 						
 						.requestMatchers("/api/programs/**").permitAll()
 						
+						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/**").permitAll()
+
+						.requestMatchers("/api/programs/**").permitAll()
+
+						.requestMatchers("/api/applications/**").permitAll().requestMatchers("/api/applications")
+						.permitAll()
+
+						.requestMatchers("/api/projects/**").permitAll().requestMatchers("/api/projects").permitAll()
+
 						// ✅ everything else requires JWT
 						.anyRequest().authenticated());
 
