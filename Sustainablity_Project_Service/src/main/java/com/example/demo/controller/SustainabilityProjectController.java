@@ -2,17 +2,24 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.SustainabilityProjectRequestDto;
 import com.example.demo.dto.SustainabilityProjectResponseDto;
 import com.example.demo.exception.ProjectNotFound;
 import com.example.demo.service.SustainabilityProjectService;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -28,7 +35,7 @@ public class SustainabilityProjectController {
 
 	/* ================= CREATE ================= */
 
-	@PostMapping
+	@PostMapping("/create")
 	public ResponseEntity<SustainabilityProjectResponseDto> createProject(
 			@Valid @RequestBody SustainabilityProjectRequestDto request) {
 
@@ -41,7 +48,7 @@ public class SustainabilityProjectController {
 
 	/* ================= READ ================= */
 
-	@GetMapping
+	@GetMapping("/fetchAll")
 	public ResponseEntity<List<SustainabilityProjectResponseDto>> getAllProjects() {
 
 		log.info("REST request to fetch all sustainability projects");
@@ -55,7 +62,7 @@ public class SustainabilityProjectController {
 		return ResponseEntity.ok(projectService.getProjectsByStatus(status));
 	}
 
-	@GetMapping("/{projectId}")
+	@GetMapping("/fetchById/{projectId}")
 	public ResponseEntity<SustainabilityProjectResponseDto> getProjectById(@PathVariable Long projectId)
 			throws ProjectNotFound {
 
@@ -65,7 +72,7 @@ public class SustainabilityProjectController {
 
 	/* ================= UPDATE ================= */
 
-	@PatchMapping("/{projectId}/status")
+	@PatchMapping("/updateByStatus/{projectId}/status")
 	public ResponseEntity<SustainabilityProjectResponseDto> updateStatus(@PathVariable Long projectId,
 			@RequestParam String status) throws ProjectNotFound {
 
@@ -75,7 +82,7 @@ public class SustainabilityProjectController {
 
 	/* ================= DELETE ================= */
 
-	@DeleteMapping("/{projectId}")
+	@DeleteMapping("/deleteById/{projectId}")
 	public ResponseEntity<String> deleteProject(@PathVariable Long projectId) throws ProjectNotFound {
 
 		log.warn("REST request to delete project ID {}", projectId);

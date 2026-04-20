@@ -2,16 +2,21 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ProgramApplicationRequestDto;
 import com.example.demo.dto.ProgramApplicationResponseDto;
 import com.example.demo.service.ProgramApplicationService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +30,7 @@ public class ProgramApplicationController {
 
 	/* ================= APPLY ================= */
 
-	@PostMapping
+	@PostMapping("/apply")
 	public ResponseEntity<ProgramApplicationResponseDto> apply(
 			@Valid @RequestBody ProgramApplicationRequestDto request) {
 
@@ -39,7 +44,7 @@ public class ProgramApplicationController {
 
 	/* ================= READ ================= */
 
-	@GetMapping
+	@GetMapping("/fetchAll")
 	public ResponseEntity<List<ProgramApplicationResponseDto>> getAllApplications() {
 
 		log.debug("REST request to fetch all program applications");
@@ -47,7 +52,7 @@ public class ProgramApplicationController {
 	}
 
 	@GetMapping("/fetchById/{id}")
-	public ResponseEntity<ProgramApplicationResponseDto> getApplicationById(@PathVariable Long applicationId) {
+	public ResponseEntity<ProgramApplicationResponseDto> getApplicationById(@PathVariable("id") Long applicationId) {
 
 		log.debug("REST request to fetch application ID {}", applicationId);
 		return ResponseEntity.ok(service.getApplicationById(applicationId));
@@ -55,14 +60,14 @@ public class ProgramApplicationController {
 
 	/* ================= REVIEW ================= */
 
-	@PatchMapping("/{applicationId}/approve")
+	@PatchMapping("/updateApplicationStatus/{applicationId}/approve")
 	public ResponseEntity<ProgramApplicationResponseDto> approve(@PathVariable Long applicationId) {
 
 		log.info("REST request to APPROVE application ID {}", applicationId);
 		return ResponseEntity.ok(service.approveApplication(applicationId));
 	}
 
-	@PatchMapping("/{applicationId}/reject")
+	@PatchMapping("/updateApplicationStatus/{applicationId}/reject")
 	public ResponseEntity<ProgramApplicationResponseDto> reject(@PathVariable Long applicationId) {
 
 		log.info("REST request to REJECT application ID {}", applicationId);

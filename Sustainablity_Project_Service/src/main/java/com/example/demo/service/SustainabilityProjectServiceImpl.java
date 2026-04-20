@@ -10,8 +10,8 @@ import com.example.demo.client.ParticipantStatusClient;
 import com.example.demo.dto.SustainabilityProjectRequestDto;
 import com.example.demo.dto.SustainabilityProjectResponseDto;
 import com.example.demo.exception.ProjectNotFound;
-import com.example.demo.model.SustainabilityProject;
 import com.example.demo.mapper.SustainabilityProjectMapper;
+import com.example.demo.model.SustainabilityProject;
 import com.example.demo.repository.SustainabilityProjectRepo;
 
 import lombok.AllArgsConstructor;
@@ -29,48 +29,35 @@ public class SustainabilityProjectServiceImpl implements SustainabilityProjectSe
 	/* ================= CREATE ================= */
 
 	@Override
-	public SustainabilityProjectResponseDto createProject(
-	        SustainabilityProjectRequestDto request) {
+	public SustainabilityProjectResponseDto createProject(SustainabilityProjectRequestDto request) {
 
-	    Long participantId = request.getParticipantId();
+		Long participantId = request.getParticipantId();
 
-	    log.info("Participant {} attempting to create project '{}'",
-	            participantId, request.getTitle());
+		if (participantId == null) {
+			throw new IllegalArgumentException("Participant ID must not be null");
+		}
 
-	    // ✅ VERIFY PARTICIPANT STATUS
-	    boolean isVerified = participantStatusClient.isVerified(participantId);
+		log.info("Verifying participantId = {}", participantId);
 
-	    if (!isVerified) {
-	        log.warn("Participant {} is NOT VERIFIED. Project creation denied.",
-	                participantId);
-	        throw new IllegalStateException(
-	                "Only VERIFIED participants are allowed to create projects"
-	        );
-	    }
+		boolean isVerified = participantStatusClient.isVerified(participantId);
 
-	    log.info("Participant {} VERIFIED. Proceeding with project creation.",
-	            participantId);
+		if (!isVerified) {
+			throw new IllegalStateException("Only VERIFIED participants are allowed to create projects");
+		}
 
-	    SustainabilityProject project = new SustainabilityProject();
-	    project.setTitle(request.getTitle());
-	    project.setDescription(request.getDescription());
-	    project.setStartDate(
-	            request.getStartDate() != null
-	                    ? request.getStartDate()
-	                    : LocalDate.now()
-	    );
-	    project.setEndDate(request.getEndDate());
-	    project.setBudget(request.getBudget());
-	    project.setStatus("PLANNED");
+		// ✅ CREATE PROJECT ENTITY
+		SustainabilityProject project = new SustainabilityProject();
+		project.setTitle(request.getTitle());
+		project.setDescription(request.getDescription());
+		project.setStartDate(request.getStartDate() != null ? request.getStartDate() : LocalDate.now());
+		project.setEndDate(request.getEndDate());
+		project.setBudget(request.getBudget());
+		project.setStatus("PLANNED");
 
-	    SustainabilityProject saved = projectRepo.save(project);
+		SustainabilityProject saved = projectRepo.save(project);
 
-	    log.info("Sustainability Project {} created successfully",
-	            saved.getProjectId());
-
-	    return SustainabilityProjectMapper.toDto(saved);
+		return SustainabilityProjectMapper.toDto(saved);
 	}
-
 
 	/* ================= READ ================= */
 

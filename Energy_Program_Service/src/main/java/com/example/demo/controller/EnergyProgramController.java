@@ -3,16 +3,24 @@ package com.example.demo.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.EnergyProgramRequestDto;
 import com.example.demo.dto.EnergyProgramResponseDto;
 import com.example.demo.exception.ProjectNotFound;
 import com.example.demo.service.EnergyProgramService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +34,7 @@ public class EnergyProgramController {
 
 	/* ================= READ ================= */
 
-	@GetMapping
+	@GetMapping("/fetchAll")
 	public ResponseEntity<List<EnergyProgramResponseDto>> getAllPrograms() {
 		log.info("REST request to fetch all energy programs");
 		return ResponseEntity.ok(service.getAllPrograms());
@@ -41,7 +49,7 @@ public class EnergyProgramController {
 
 	/* ================= CREATE ================= */
 
-	@PostMapping
+	@PostMapping("/create")
 	public ResponseEntity<EnergyProgramResponseDto> createProgram(@Valid @RequestBody EnergyProgramRequestDto request) {
 
 		log.info("REST request to create Energy Program: {}", request.getTitle());
@@ -50,7 +58,7 @@ public class EnergyProgramController {
 
 	/* ================= UPDATE ================= */
 
-	@PutMapping("/{programId}")
+	@PutMapping("/updateProgramByID/{programId}")
 	public ResponseEntity<EnergyProgramResponseDto> updateProgram(@PathVariable Long programId,
 			@Valid @RequestBody EnergyProgramRequestDto request) throws ProjectNotFound {
 
@@ -58,8 +66,7 @@ public class EnergyProgramController {
 		return ResponseEntity.ok(service.updateProgram(programId, request));
 	}
 
-
-	@PatchMapping("/{programId}/status")
+	@PatchMapping("/updateProgramStatus/{programId}/status")
 	public ResponseEntity<EnergyProgramResponseDto> updateProgramStatus(@PathVariable Long programId,
 			@RequestParam String status) throws ProjectNotFound {
 
@@ -79,7 +86,7 @@ public class EnergyProgramController {
 
 	/* ================= DELETE ================= */
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/deleteProgramById/{id}")
 	public ResponseEntity<String> deleteProgram(@PathVariable Long id) throws ProjectNotFound {
 
 		log.warn("REST request to delete Energy Program ID {}", id);
