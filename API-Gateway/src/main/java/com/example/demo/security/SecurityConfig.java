@@ -32,6 +32,12 @@ public class SecurityConfig {
 						.requestMatchers("/actuator/**").permitAll().requestMatchers("/api/participants/**").permitAll()
 
 						// ✅ PUBLIC AUTH ENDPOINTS (INCLUDING REGISTER)
+						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/auth/login").permitAll()
+						
+						.requestMatchers("/api/incentives/**").permitAll()
+						
+						.requestMatchers("/api/programs/**").permitAll()
+						
 						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/**").permitAll()
 
 						.requestMatchers("/api/programs/**").permitAll()
