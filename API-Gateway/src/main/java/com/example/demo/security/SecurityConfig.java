@@ -32,7 +32,7 @@ public class SecurityConfig {
 						.requestMatchers("/actuator/**").permitAll().requestMatchers("/api/participants/**").permitAll()
 
 						// ✅ PUBLIC AUTH ENDPOINTS (INCLUDING REGISTER)
-						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/auth/login").permitAll()
+						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/**").permitAll()
 
 						// ✅ everything else requires JWT
 						.anyRequest().authenticated());
