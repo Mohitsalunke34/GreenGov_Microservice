@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.Enums.OfficerType;
 import com.example.demo.model.Enums.ProfileStatus;
 import com.example.demo.model.OfficerProfile;
 import com.example.demo.repository.OfficerProfileRepo;
@@ -35,4 +36,11 @@ public class OfficerApprovalServiceImpl implements OfficerApprovalService {
 
 		repo.save(profile);
 	}
+
+	@Override
+	public List<OfficerProfile> getActiveDisbursementOfficers() {
+
+		return repo.findByOfficerTypeAndStatus(OfficerType.DISBURSEMENT_OFFICER, ProfileStatus.APPROVED);
+	}
+
 }

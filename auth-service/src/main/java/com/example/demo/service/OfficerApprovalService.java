@@ -8,4 +8,6 @@ public interface OfficerApprovalService {
 	List<OfficerProfile> pendingOfficers();
 
 	void approveOfficer(Long officerProfileId);
+
+	List<OfficerProfile> getActiveDisbursementOfficers();
 }
