@@ -241,4 +241,10 @@ public class IncentiveServiceImpl implements IncentiveService {
 				.orElseThrow(() -> new RuntimeException("No incentive found for applicationId: " + applicationId));
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public boolean incentiveExists(Long incentiveId) {
+		return incentiveRepo.existsById(incentiveId);
+	}
+
 }

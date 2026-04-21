@@ -88,6 +88,13 @@ public class SustainabilityProjectController {
 		log.warn("REST request to delete project ID {}", projectId);
 		return ResponseEntity.ok(projectService.deleteProject(projectId));
 	}
-	
-	
+
+	/**
+	 * EXISTS CHECK Used by Compliance / Incentive microservices via Feign
+	 */
+	@GetMapping("/{id}/exists")
+	public ResponseEntity<Boolean> projectExists(@PathVariable Long id) {
+		return ResponseEntity.ok(projectService.projectExists(id));
+	}
+
 }

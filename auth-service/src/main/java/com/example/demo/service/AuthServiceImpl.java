@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.RegisterRequestDTO;
 import com.example.demo.dto.UserProfileDTO;
+import com.example.demo.dto.client.UserBasicDTO;
 import com.example.demo.model.Admin;
 import com.example.demo.model.Enums.PrimaryRole;
 import com.example.demo.model.Enums.ProfileStatus;
@@ -145,5 +146,21 @@ public class AuthServiceImpl implements AuthService {
 						.email(user.getEmail()).primaryRole(user.getPrimaryRole()).active(user.isActive())
 						.createdAt(user.getCreatedAt()).lastLoginAt(user.getLastLoginAt()).build())
 				.toList();
+	}
+
+	// for Compliance client
+	@Override
+	public UserBasicDTO getUserBasicById(Long userId) {
+
+		UserAccount user = userRepo.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+		UserBasicDTO dto = new UserBasicDTO();
+		dto.setId(user.getId());
+		dto.setUsername(user.getUsername());
+		dto.setPrimaryRole(user.getPrimaryRole().name());
+		dto.setActive(user.isActive());
+
+		return dto;
 	}
 }

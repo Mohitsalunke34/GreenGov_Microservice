@@ -19,4 +19,7 @@ public interface SustainabilityProjectService {
 	List<SustainabilityProjectResponseDto> getAllProjects();
 
 	String deleteProject(Long projectId) throws ProjectNotFound;
+
+	boolean projectExists(Long projectId);
+
 }

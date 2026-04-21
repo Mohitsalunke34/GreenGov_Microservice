@@ -56,9 +56,9 @@ public class SecurityConfig {
 						.requestMatchers("/api/applications/**").permitAll().requestMatchers("/api/applications")
 						.permitAll()
 
-						.requestMatchers("/api/projects/**").permitAll().requestMatchers("/api/projects").permitAll()
-
-
+						.requestMatchers("/api/projects").permitAll().requestMatchers("/api/projects/**").permitAll()
+						.requestMatchers("/api/compliance").permitAll().requestMatchers("/api/compliance/**").permitAll()
+						.requestMatchers("/api/audits").permitAll().requestMatchers("/api/audits/**").permitAll()
 						// ✅ everything else requires JWT
 						.anyRequest().authenticated());
 

@@ -18,6 +18,7 @@ import com.cognizant.greengov.profile.dto.EntityProfileResponseDto;
 import com.cognizant.greengov.profile.dto.ParticipantRegistrationRequestDto;
 import com.cognizant.greengov.profile.dto.ParticipantUpdateRequestDto;
 import com.cognizant.greengov.profile.dto.VerificationStatusUpdateDto;
+import com.cognizant.greengov.profile.dto.clients.ParticipantBasicDTO;
 import com.cognizant.greengov.profile.service.ParticipantService;
 
 import jakarta.validation.Valid;
@@ -73,5 +74,14 @@ public class ParticipantController {
 			@Valid @RequestBody VerificationStatusUpdateDto statusDto) {
 		participantService.updateDocumentStatus(documentId, statusDto);
 		return ResponseEntity.ok().build();
+	}
+
+	/**
+	 * BASIC PARTICIPANT INFO Used by Compliance / Audit microservices via Feign
+	 */
+	@GetMapping("/{id}/basic")
+	public ResponseEntity<ParticipantBasicDTO> getParticipantBasic(@PathVariable Long id) {
+
+		return ResponseEntity.ok(participantService.getParticipantBasic(id));
 	}
 }

@@ -16,6 +16,7 @@ import com.cognizant.greengov.profile.dto.ParticipantRegistrationRequestDto;
 import com.cognizant.greengov.profile.dto.ParticipantUpdateRequestDto;
 import com.cognizant.greengov.profile.dto.UserProfileDTO;
 import com.cognizant.greengov.profile.dto.VerificationStatusUpdateDto;
+import com.cognizant.greengov.profile.dto.clients.ParticipantBasicDTO;
 import com.cognizant.greengov.profile.exception.ResourceNotFoundException;
 import com.cognizant.greengov.profile.model.VerificationStatus;
 import com.cognizant.greengov.profile.model.register_login.Document;
@@ -129,6 +130,20 @@ public class ParticipantServiceImpl implements ParticipantService {
 
 		document.setVerificationStatus(statusDto.getStatus());
 		documentRepository.save(document);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ParticipantBasicDTO getParticipantBasic(Long participantId) {
+
+		ParticipantProfile profile = profileRepository.findById(participantId)
+				.orElseThrow(() -> new ResourceNotFoundException("Profile not found with ID: " + participantId));
+
+		ParticipantBasicDTO dto = new ParticipantBasicDTO();
+		dto.setId(profile.getId());
+		dto.setVerified(profile.getStatus() == VerificationStatus.VERIFIED);
+
+		return dto;
 	}
 
 	private EntityProfileResponseDto mapToProfileResponseDto(ParticipantProfile profile) {

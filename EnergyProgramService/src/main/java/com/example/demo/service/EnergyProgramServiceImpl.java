@@ -153,4 +153,11 @@ public class EnergyProgramServiceImpl implements EnergyProgramService {
 		return programRepo.findById(programId)
 				.orElseThrow(() -> new ProjectNotFound("Energy Program not found with ID: " + programId));
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public boolean programExists(Long programId) {
+		return programRepo.existsById(programId);
+	}
+
 }

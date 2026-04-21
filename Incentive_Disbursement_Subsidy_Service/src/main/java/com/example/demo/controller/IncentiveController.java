@@ -54,15 +54,11 @@ public class IncentiveController {
 	/**
 	 * FETCH INCENTIVE BY APPLICATION ID One application → one incentive
 	 */
-    @GetMapping("/application/{applicationId}")
-    public ResponseEntity<IncentiveResponseDTO> getByApplication(
-            @PathVariable Long applicationId
-    ) {
+	@GetMapping("/application/{applicationId}")
+	public ResponseEntity<IncentiveResponseDTO> getByApplication(@PathVariable Long applicationId) {
 
-        return ResponseEntity.ok(
-                incentiveService.getByApplication(applicationId)
-        );
-    }
+		return ResponseEntity.ok(incentiveService.getByApplication(applicationId));
+	}
 
 	/**
 	 * FETCH ALL INCENTIVES FOR A BENEFICIARY
@@ -110,6 +106,15 @@ public class IncentiveController {
 	@GetMapping("/fetch/report-metrics")
 	public Map<String, Object> getIncentiveReportMetrics() {
 		return incentiveService.getIncentiveReportMetrics();
+	}
+
+	/**
+	 * EXISTS CHECK Used by Compliance microservice via Feign
+	 */
+	@GetMapping("/{id}/exists")
+	public ResponseEntity<Boolean> incentiveExists(@PathVariable Long id) {
+
+		return ResponseEntity.ok(incentiveService.incentiveExists(id));
 	}
 
 }

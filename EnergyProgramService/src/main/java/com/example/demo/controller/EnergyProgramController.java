@@ -76,7 +76,6 @@ public class EnergyProgramController {
 
 	/* ================= BUDGET ================= */
 
-
 	@PutMapping("/{id}/deduct-budget")
 	public ResponseEntity<EnergyProgramResponseDto> deductProgramBudget(@PathVariable("id") Long programId, // ✅ FIX
 			@RequestParam BigDecimal amount) throws ProjectNotFound {
@@ -85,7 +84,6 @@ public class EnergyProgramController {
 		return ResponseEntity.ok(service.deductBudget(programId, amount));
 	}
 
-
 	/* ================= DELETE ================= */
 
 	@DeleteMapping("/deleteProgramById/{id}")
@@ -93,5 +91,10 @@ public class EnergyProgramController {
 
 		log.warn("REST request to delete Energy Program ID {}", id);
 		return ResponseEntity.ok(service.deleteProgram(id));
+	}
+
+	@GetMapping("/{id}/exists")
+	public ResponseEntity<Boolean> programExists(@PathVariable Long id) {
+		return ResponseEntity.ok(service.programExists(id));
 	}
 }

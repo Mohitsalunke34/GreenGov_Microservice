@@ -5,9 +5,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.clients.EnergyProgramClient;
 import com.example.demo.clients.IncentiveClient;
 import com.example.demo.clients.ParticipantClient;
-import com.example.demo.clients.SustainabilityClient;
+import com.example.demo.clients.SustainabilityProjectClient;
 import com.example.demo.clients.UserClient;
 import com.example.demo.dto.ParticipantBasicDTO;
 import com.example.demo.dto.UserBasicDTO;
@@ -30,7 +31,8 @@ public class ComplianceServiceImpl implements ComplianceService {
 	private final ComplianceRecordRepository complianceRepo;
 	private final ParticipantClient participantClient;
 	private final UserClient userClient;
-	private final SustainabilityClient sustainabilityClient;
+	private final SustainabilityProjectClient sustainabilityClient;
+	private final EnergyProgramClient programClient;
 	private final IncentiveClient incentiveClient;
 
 	/**
@@ -61,7 +63,7 @@ public class ComplianceServiceImpl implements ComplianceService {
 		switch (subjectType) {
 		case PROJECT -> assertExists(sustainabilityClient.projectExists(dto.getSubjectId()), "Project not found");
 
-		case PROGRAM -> assertExists(sustainabilityClient.programExists(dto.getSubjectId()), "Program not found");
+		case PROGRAM -> assertExists(programClient.programExists(dto.getSubjectId()), "Program not found");
 
 		case INCENTIVE -> assertExists(incentiveClient.incentiveExists(dto.getSubjectId()), "Incentive not found");
 		}

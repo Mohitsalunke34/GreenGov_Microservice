@@ -122,4 +122,11 @@ public class SustainabilityProjectServiceImpl implements SustainabilityProjectSe
 
 		return "Project with ID " + projectId + " has been deleted successfully.";
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public boolean projectExists(Long projectId) {
+		return projectRepo.existsById(projectId);
+	}
+
 }

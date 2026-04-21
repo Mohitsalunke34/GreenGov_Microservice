@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.demo.dto.RegisterRequestDTO;
 import com.example.demo.dto.UserProfileDTO;
+import com.example.demo.dto.client.UserBasicDTO;
 
 public interface AuthService {
 
@@ -14,4 +15,6 @@ public interface AuthService {
 	void register(RegisterRequestDTO request);
 
 	List<UserProfileDTO> getUserByPrimaryRole();
+
+	UserBasicDTO getUserBasicById(Long userId);
 }
