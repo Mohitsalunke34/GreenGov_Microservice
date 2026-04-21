@@ -12,18 +12,18 @@ public interface IncentiveService {
 	IncentiveResponseDTO createIncentive(IncentiveCreateRequestDTO dto, Long officerUserId);
 
 	// Fetch incentive for a specific application
-	IncentiveResponseDTO getByApplication(Long applicationId);
+//	Optional<Incentive> findByApplicationId(Long applicationId);
 
 	// Fetch all incentives for a beneficiary (citizen/business)
 	List<IncentiveResponseDTO> getByBeneficiary(Long participantId);
-	
-	//Fetch incentive by incentiveId
+
+	// Fetch incentive by incentiveId
 	public IncentiveResponseDTO getByIncentiveId(Long incentiveId);
-	
-	//delete the incentive by id
+
+	// delete the incentive by id
 	IncentiveResponseDTO deleteIncentive(Long incentiveId);
-	
-	List <IncentiveResponseDTO> getAllIncentives();
-	
+
+	List<IncentiveResponseDTO> getAllIncentives();
+
 	Map<String, Object> getIncentiveReportMetrics();
 }

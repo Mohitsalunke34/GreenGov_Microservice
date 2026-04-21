@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +23,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Incentive Controller (MICROSERVICE)
- * Handles incentive creation, retrieval and deletion.
+ * Incentive Controller (MICROSERVICE) Handles incentive creation, retrieval and
+ * deletion.
  *
- * NOTE:
- * - No entity access
- * - No budget logic
- * - No program/application logic
+ * NOTE: - No entity access - No budget logic - No program/application logic
  */
 @Slf4j
 @RestController
@@ -38,109 +34,82 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class IncentiveController {
 
-    private final IncentiveService incentiveService;
+	private final IncentiveService incentiveService;
 
-    /**
-     * CREATE INCENTIVE
-     * Officer ID comes from API Gateway / Auth service
-     */
-    @PostMapping
-    public ResponseEntity<IncentiveResponseDTO> createIncentive(
-            @RequestHeader("X-Officer-User-Id") Long officerUserId,
-            @RequestBody @Valid IncentiveCreateRequestDTO dto
-    ) {
+	/**
+	 * CREATE INCENTIVE Officer ID comes from API Gateway / Auth service
+	 */
+	@PostMapping
+	public ResponseEntity<IncentiveResponseDTO> createIncentive(@RequestHeader("X-Officer-User-Id") Long officerUserId,
+			@RequestBody @Valid IncentiveCreateRequestDTO dto) {
 
-        log.info(
-            "Microservice request → Create Incentive | ApplicationId={} | OfficerId={}",
-            dto.getApplicationId(),
-            officerUserId
-        );
+		log.info("Microservice request → Create Incentive | ApplicationId={} | OfficerId={}", dto.getApplicationId(),
+				officerUserId);
 
-        IncentiveResponseDTO response =
-                incentiveService.createIncentive(dto, officerUserId);
+		IncentiveResponseDTO response = incentiveService.createIncentive(dto, officerUserId);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
 
-    /**
-     * FETCH INCENTIVE BY APPLICATION ID
-     * One application → one incentive
-     */
-    @GetMapping("/application/{applicationId}")
-    public ResponseEntity<IncentiveResponseDTO> getByApplication(
-            @PathVariable Long applicationId
-    ) {
+	/**
+	 * FETCH INCENTIVE BY APPLICATION ID One application → one incentive
+	 */
+//    @GetMapping("/application/{applicationId}")
+//    public ResponseEntity<IncentiveResponseDTO> getByApplication(
+//            @PathVariable Long applicationId
+//    ) {
+//
+//        return ResponseEntity.ok(
+//                incentiveService.getByApplication(applicationId)
+//        );
+//    }
 
-        return ResponseEntity.ok(
-                incentiveService.getByApplication(applicationId)
-        );
-    }
+	/**
+	 * FETCH ALL INCENTIVES FOR A BENEFICIARY
+	 */
+	@GetMapping("/beneficiary/{beneficiaryId}")
+	public ResponseEntity<List<IncentiveResponseDTO>> getByBeneficiary(@PathVariable Long beneficiaryId) {
 
-    /**
-     * FETCH ALL INCENTIVES FOR A BENEFICIARY
-     */
-    @GetMapping("/beneficiary/{beneficiaryId}")
-    public ResponseEntity<List<IncentiveResponseDTO>> getByBeneficiary(
-            @PathVariable Long beneficiaryId
-    ) {
+		return ResponseEntity.ok(incentiveService.getByBeneficiary(beneficiaryId));
+	}
 
-        return ResponseEntity.ok(
-                incentiveService.getByBeneficiary(beneficiaryId)
-        );
-    }
+	/**
+	 * FETCH INCENTIVE BY ID
+	 */
+	@GetMapping("/{incentiveId}")
+	public ResponseEntity<IncentiveResponseDTO> getByIncentiveId(@PathVariable Long incentiveId) {
 
-    /**
-     * FETCH INCENTIVE BY ID
-     */
-    @GetMapping("/{incentiveId}")
-    public ResponseEntity<IncentiveResponseDTO> getByIncentiveId(
-            @PathVariable Long incentiveId
-    ) {
+		return ResponseEntity.ok(incentiveService.getByIncentiveId(incentiveId));
+	}
 
-        return ResponseEntity.ok(
-                incentiveService.getByIncentiveId(incentiveId)
-        );
-    }
+	/**
+	 * FETCH ALL INCENTIVES (ADMIN / AUDIT)
+	 */
+	@GetMapping
+	public ResponseEntity<List<IncentiveResponseDTO>> getAllIncentives() {
 
-    /**
-     * FETCH ALL INCENTIVES (ADMIN / AUDIT)
-     */
-    @GetMapping
-    public ResponseEntity<List<IncentiveResponseDTO>> getAllIncentives() {
+		return ResponseEntity.ok(incentiveService.getAllIncentives());
+	}
 
-        return ResponseEntity.ok(
-                incentiveService.getAllIncentives()
-        );
-    }
+	/**
+	 * DELETE INCENTIVE IMPORTANT: - Does NOT refund budget (business decision)
+	 */
+	@DeleteMapping("/{incentiveId}")
+	public ResponseEntity<IncentiveResponseDTO> deleteIncentive(@PathVariable Long incentiveId) {
 
-    /**
-     * DELETE INCENTIVE
-     * IMPORTANT:
-     * - Does NOT refund budget (business decision)
-     */
-    @DeleteMapping("/{incentiveId}")
-    public ResponseEntity<IncentiveResponseDTO> deleteIncentive(
-            @PathVariable Long incentiveId
-    ) {
+		log.warn("Microservice request → Delete Incentive | IncentiveId={}", incentiveId);
 
-        log.warn("Microservice request → Delete Incentive | IncentiveId={}", incentiveId);
+		IncentiveResponseDTO deleted = incentiveService.deleteIncentive(incentiveId);
 
-        IncentiveResponseDTO deleted =
-                incentiveService.deleteIncentive(incentiveId);
+		return ResponseEntity.ok(deleted);
+	}
 
-        return ResponseEntity.ok(deleted);
-    }
-    
-
-    /**
-      * Reporting & Analytics endpoint
-      * Used by Reports microservice
-      */
-     @GetMapping("/report-metrics")
-     public Map<String, Object> getIncentiveReportMetrics() {
-         return incentiveService.getIncentiveReportMetrics();
-     }
+	/**
+	 * Reporting & Analytics endpoint Used by Reports microservice
+	 */
+	@GetMapping("/report-metrics")
+	public Map<String, Object> getIncentiveReportMetrics() {
+		return incentiveService.getIncentiveReportMetrics();
+	}
 
 }

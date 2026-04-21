@@ -48,4 +48,5 @@ public class AuthController {
 	public List<UserProfileDTO> getUserByPrimaryRole() {
 		return service.getUserByPrimaryRole();
 	}
+
 }

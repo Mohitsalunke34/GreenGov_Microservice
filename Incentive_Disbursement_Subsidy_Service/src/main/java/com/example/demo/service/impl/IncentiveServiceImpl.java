@@ -9,11 +9,12 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.client.OfficerClient;
 import com.example.demo.client.ProgramClient;
-import com.example.demo.client.UserClient;
 import com.example.demo.dto.ApplicationDTO;
 import com.example.demo.dto.IncentiveCreateRequestDTO;
 import com.example.demo.dto.IncentiveResponseDTO;
+import com.example.demo.dto.OfficerDTO;
 import com.example.demo.dto.ProgramDTO;
 import com.example.demo.model.Incentive;
 import com.example.demo.modelMapper.IncentiveMapper;
@@ -29,145 +30,217 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class IncentiveServiceImpl implements IncentiveService {
 
-    private final IncentiveRepository incentiveRepo;
-    private final ProgramClient programClient;
-    private final UserClient userClient;
-    private final DisbursementRepository disbursementRepo;
+	private final IncentiveRepository incentiveRepo;
+	private final ProgramClient programClient;
+	private final OfficerClient officerClient;
+	private final DisbursementRepository disbursementRepo;
 
-    @Override
-    @Transactional
-    public IncentiveResponseDTO createIncentive(
-            IncentiveCreateRequestDTO dto,
-            Long officerUserId
-    ) {
+//    @Override
+//    @Transactional
+//    public IncentiveResponseDTO createIncentive(
+//            IncentiveCreateRequestDTO dto,
+//            Long officerUserId
+//    ) {
+//
+//        log.info("Creating incentive for Application ID: {}", dto.getApplicationId());
+//
+//        // 1️⃣ Prevent duplicate incentive per application
+//        if (incentiveRepo.findByApplicationId(dto.getApplicationId()).isPresent()) {
+//            throw new IllegalStateException(
+//                    "Incentive already exists for this application"
+//            );
+//        }
+//
+//        // 2️⃣ Fetch Application (Program Service)
+//        ApplicationDTO application =
+//                programClient.getApplicationById(dto.getApplicationId());
+//
+//        if (application == null) {
+//            throw new IllegalArgumentException("Application not found");
+//        }
+//
+//        // 3️⃣ Validate Application status
+//        if (!"APPROVED".equalsIgnoreCase(application.getStatus())) {
+//            throw new IllegalStateException(
+//                    "Incentive can be created only for APPROVED applications"
+//            );
+//        }
+//
+//        // 4️⃣ Fetch Program
+//        ProgramDTO program =
+//                programClient.getProgramById(application.getProgramId());
+//
+//        // 5️⃣ Validate Program status
+//        if (!"ACTIVE".equalsIgnoreCase(program.getStatus())) {
+//            throw new IllegalStateException(
+//                    "Program is not ACTIVE. Incentive cannot be issued"
+//            );
+//        }
+//
+//        BigDecimal requestedAmount = BigDecimal.valueOf(dto.getAmount());
+//
+//        // 6️⃣ Budget check (read‑only)
+//        BigDecimal remainingBudget =
+//                program.getRemainingProgramBudget() != null
+//                        ? program.getRemainingProgramBudget()
+//                        : program.getBudget();
+//
+//        if (requestedAmount.compareTo(remainingBudget) > 0) {
+//            throw new IllegalStateException("Insufficient program budget");
+//        }
+//
+//        // 7️⃣ Deduct budget (Program Service OWNS budget)
+//        programClient.deductProgramBudget(
+//                program.getProgramId(),
+//                requestedAmount
+//        );
+//
+//        // 8️⃣ Save Incentive locally ✅ (IMPORTANT CHANGE HERE)
+//        Incentive incentive = Incentive.builder()
+//                .applicationId(dto.getApplicationId())
+//                .programId(program.getProgramId())
+//                .beneficiaryId(application.getApplicantId())
+//                .amount(dto.getAmount())                    // total sanctioned
+//                .remainingAmount(dto.getAmount())           // ✅ INITIAL REMAINING AMOUNT
+//                .sanctionedDate(LocalDate.now())
+//                .status("APPROVED")                          // initial state
+//                .approvedBy(officerUserId)
+//                .build();
+//
+//        Incentive saved = incentiveRepo.save(incentive);
+//
+//        log.info("Incentive {} created successfully", saved.getIncentiveId());
+//
+//        return IncentiveMapper.toDTO(saved);
+//    }
+//    @Override
+//    public IncentiveResponseDTO getByApplication(Long applicationId) {
+//        return incentiveRepo.findByApplicationId(applicationId)
+//                .map(IncentiveMapper::toDTO)
+//                .orElseThrow(() -> new IllegalArgumentException("No incentive found for Application ID: " + applicationId));
+//    }
+	@Override
+	@Transactional
+	public IncentiveResponseDTO createIncentive(IncentiveCreateRequestDTO dto, Long officerUserId) {
 
-        log.info("Creating incentive for Application ID: {}", dto.getApplicationId());
+		/*
+		 * ======================= 0️⃣ Validate Officer =======================
+		 */
+		List<OfficerDTO> officers = officerClient.getActiveDisbursementOfficers(officerUserId);
 
-        // 1️⃣ Prevent duplicate incentive per application
-        if (incentiveRepo.findByApplicationId(dto.getApplicationId()).isPresent()) {
-            throw new IllegalStateException(
-                    "Incentive already exists for this application"
-            );
-        }
+		OfficerDTO officer = officers.stream().filter(o -> o.getUserId().equals(officerUserId)).findFirst()
+				.orElseThrow(() -> new RuntimeException("User is not an APPROVED DISBURSEMENT officer"));
 
-        // 2️⃣ Fetch Application (Program Service)
-        ApplicationDTO application =
-                programClient.getApplicationById(dto.getApplicationId());
+		log.info("Creating incentive by officer {}", officer.getUsername());
 
-        if (application == null) {
-            throw new IllegalArgumentException("Application not found");
-        }
+		/*
+		 * ======================= 1️⃣ Prevent duplicates =======================
+		 */
+		incentiveRepo.findByApplicationId(dto.getApplicationId()).ifPresent(existing -> {
+			throw new IllegalStateException("Incentive already exists for this application");
+		});
 
-        // 3️⃣ Validate Application status
-        if (!"APPROVED".equalsIgnoreCase(application.getStatus())) {
-            throw new IllegalStateException(
-                    "Incentive can be created only for APPROVED applications"
-            );
-        }
+		/*
+		 * ======================= 2️⃣ Fetch Application =======================
+		 */
+		ApplicationDTO application = programClient.getApplicationById(dto.getApplicationId());
 
-        // 4️⃣ Fetch Program
-        ProgramDTO program =
-                programClient.getProgramById(application.getProgramId());
+		if (!"APPROVED".equalsIgnoreCase(application.getStatus())) {
+			throw new IllegalStateException("Application not approved");
+		}
 
-        // 5️⃣ Validate Program status
-        if (!"ACTIVE".equalsIgnoreCase(program.getStatus())) {
-            throw new IllegalStateException(
-                    "Program is not ACTIVE. Incentive cannot be issued"
-            );
-        }
+		/*
+		 * ======================= 3️⃣ Fetch Program =======================
+		 */
+		ProgramDTO program = programClient.getProgramById(application.getProgramId());
 
-        BigDecimal requestedAmount = BigDecimal.valueOf(dto.getAmount());
+		if (!"ACTIVE".equalsIgnoreCase(program.getStatus())) {
+			throw new IllegalStateException("Program not active");
+		}
 
-        // 6️⃣ Budget check (read‑only)
-        BigDecimal remainingBudget =
-                program.getRemainingProgramBudget() != null
-                        ? program.getRemainingProgramBudget()
-                        : program.getBudget();
+		/*
+		 * ======================= 4️⃣ Budget Check =======================
+		 */
+		BigDecimal requestedAmount = BigDecimal.valueOf(dto.getAmount());
 
-        if (requestedAmount.compareTo(remainingBudget) > 0) {
-            throw new IllegalStateException("Insufficient program budget");
-        }
+		BigDecimal remainingBudget = program.getRemainingProgramBudget() != null ? program.getRemainingProgramBudget()
+				: program.getBudget();
 
-        // 7️⃣ Deduct budget (Program Service OWNS budget)
-        programClient.deductProgramBudget(
-                program.getProgramId(),
-                requestedAmount
-        );
+		if (requestedAmount.compareTo(remainingBudget) > 0) {
+			throw new IllegalStateException("Insufficient program budget");
+		}
 
-        // 8️⃣ Save Incentive locally ✅ (IMPORTANT CHANGE HERE)
-        Incentive incentive = Incentive.builder()
-                .applicationId(dto.getApplicationId())
-                .programId(program.getProgramId())
-                .beneficiaryId(application.getApplicantId())
-                .amount(dto.getAmount())                    // total sanctioned
-                .remainingAmount(dto.getAmount())           // ✅ INITIAL REMAINING AMOUNT
-                .sanctionedDate(LocalDate.now())
-                .status("APPROVED")                          // initial state
-                .approvedBy(officerUserId)
-                .build();
+		/*
+		 * ======================= 5️⃣ Deduct Budget =======================
+		 */
+		programClient.deductProgramBudget(program.getProgramId(), requestedAmount);
 
-        Incentive saved = incentiveRepo.save(incentive);
+		/*
+		 * ======================= 6️⃣ Persist Incentive =======================
+		 */
+		Incentive incentive = Incentive.builder().applicationId(dto.getApplicationId())
+				.programId(program.getProgramId()).beneficiaryId(application.getApplicantId()).amount(dto.getAmount())
+				.remainingAmount(dto.getAmount()).sanctionedDate(LocalDate.now()).status("APPROVED")
+				.approvedBy(officerUserId).build();
 
-        log.info("Incentive {} created successfully", saved.getIncentiveId());
+		Incentive saved = incentiveRepo.save(incentive);
 
-        return IncentiveMapper.toDTO(saved);
-    }
-    @Override
-    public IncentiveResponseDTO getByApplication(Long applicationId) {
-        return incentiveRepo.findByApplicationId(applicationId)
-                .map(IncentiveMapper::toDTO)
-                .orElseThrow(() -> new IllegalArgumentException("No incentive found for Application ID: " + applicationId));
-    }
+		log.info("Incentive {} created successfully", saved.getIncentiveId());
 
-    @Override
-    public List<IncentiveResponseDTO> getByBeneficiary(Long beneficiaryId) {
-        return incentiveRepo.findByBeneficiaryId(beneficiaryId).stream()
-                .map(IncentiveMapper::toDTO)
-                .toList();
-    }
+		return IncentiveMapper.toDTO(saved);
+	}
 
-    @Override
-    public IncentiveResponseDTO getByIncentiveId(Long incentiveId) {
-        return incentiveRepo.findByIncentiveId(incentiveId)
-                .map(IncentiveMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Incentive not found"));
-    }
+	@Override
+	public List<IncentiveResponseDTO> getByBeneficiary(Long beneficiaryId) {
+		return incentiveRepo.findByBeneficiaryId(beneficiaryId).stream().map(IncentiveMapper::toDTO).toList();
+	}
 
-    @Override
-    @Transactional
-    public IncentiveResponseDTO deleteIncentive(Long incentiveId) {
-        Incentive incentive = incentiveRepo.findById(incentiveId)
-                .orElseThrow(() -> new IllegalArgumentException("Incentive not found"));
-        
-        IncentiveResponseDTO response = IncentiveMapper.toDTO(incentive);
-        incentiveRepo.delete(incentive);
-        return response;
-    }
+	@Override
+	public IncentiveResponseDTO getByIncentiveId(Long incentiveId) {
+		return incentiveRepo.findByIncentiveId(incentiveId).map(IncentiveMapper::toDTO)
+				.orElseThrow(() -> new RuntimeException("Incentive not found"));
+	}
 
-    @Override
-    public List<IncentiveResponseDTO> getAllIncentives() {
-        return incentiveRepo.findAll().stream()
-                .map(IncentiveMapper::toDTO)
-                .toList();
-    }
-    
+	@Override
+	@Transactional
+	public IncentiveResponseDTO deleteIncentive(Long incentiveId) {
+		Incentive incentive = incentiveRepo.findById(incentiveId)
+				.orElseThrow(() -> new IllegalArgumentException("Incentive not found"));
+		IncentiveResponseDTO response = IncentiveMapper.toDTO(incentive);
+		incentiveRepo.delete(incentive);
+		return response;
+	}
 
-    @Override
-       public Map<String, Object> getIncentiveReportMetrics() {
+	@Override
+	public List<IncentiveResponseDTO> getAllIncentives() {
+		return incentiveRepo.findAll().stream().map(IncentiveMapper::toDTO).toList();
+	}
 
-           long totalIncentives = incentiveRepo.count();
-           long totalDisbursements = disbursementRepo.count();
+	@Override
+	public Map<String, Object> getIncentiveReportMetrics() {
 
-           Double totalDisbursedAmount =
-        		   disbursementRepo.getTotalDisbursedAmount();
+		long totalIncentives = incentiveRepo.count();
+		long totalDisbursements = disbursementRepo.count();
 
-           Map<String, Object> metrics = new HashMap<>();
-           metrics.put("totalIncentives", totalIncentives);
-           metrics.put("totalDisbursements", totalDisbursements);
-           metrics.put("totalAmountDisbursed",
-                   totalDisbursedAmount != null ? totalDisbursedAmount : 0.0);
+		Double totalDisbursedAmount = disbursementRepo.getTotalDisbursedAmount();
 
-           return metrics;
-       }
+		Map<String, Object> metrics = new HashMap<>();
+		metrics.put("totalIncentives", totalIncentives);
+		metrics.put("totalDisbursements", totalDisbursements);
+		metrics.put("totalAmountDisbursed", totalDisbursedAmount != null ? totalDisbursedAmount : 0.0);
+
+		return metrics;
+	}
+
+//	@Override
+//	public IncentiveResponseDTO getByApplication(Long applicationId) {
+//		log.debug("Fetching incentive for application: {}", applicationId);
+//		ProgramApplication app = appRepo.findById(applicationId)
+//				.orElseThrow(() -> new IllegalArgumentException("Application not found"));
+//
+//		return incentiveRepo.findByApplication(app)
+//				.map(IncentiveMapper::toDTO)
+//				.orElseThrow(() -> new IllegalArgumentException("No incentive found"));
+//	}
 
 }
