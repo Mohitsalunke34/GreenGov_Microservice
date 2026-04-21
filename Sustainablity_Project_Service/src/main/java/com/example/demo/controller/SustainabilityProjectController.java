@@ -62,7 +62,7 @@ public class SustainabilityProjectController {
 		return ResponseEntity.ok(projectService.getProjectsByStatus(status));
 	}
 
-	@GetMapping("/fetchById/{projectId}")
+	@GetMapping("/{projectId}")
 	public ResponseEntity<SustainabilityProjectResponseDto> getProjectById(@PathVariable Long projectId)
 			throws ProjectNotFound {
 
@@ -88,4 +88,6 @@ public class SustainabilityProjectController {
 		log.warn("REST request to delete project ID {}", projectId);
 		return ResponseEntity.ok(projectService.deleteProject(projectId));
 	}
+	
+	
 }
