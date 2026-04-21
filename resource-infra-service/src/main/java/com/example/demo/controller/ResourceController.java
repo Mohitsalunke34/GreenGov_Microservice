@@ -47,7 +47,7 @@ public class ResourceController {
 	 * US26: Update existing resource details. 
 	 * PUT /api/resources/{id}
 	 */
-	@PutMapping("/{id}") // Removed "/update" from path to follow standard REST patterns
+	@PutMapping("/{id}") 
 	public ResponseEntity<ResourceResponseDTO> update(
 			@PathVariable("id") long resourceId,
 			@RequestBody @Valid ResourceCreateRequestDTO dto) {
@@ -69,7 +69,7 @@ public class ResourceController {
 	 * US25: View all registered resources (Global Inventory). 
 	 * GET /api/resources
 	 */
-	@GetMapping
+	@GetMapping("/get-all")
 	public ResponseEntity<List<ResourceResponseDTO>> getAll() {
 		logger.info("Fetching global resource inventory.");
 		return ResponseEntity.ok(service.getAllResources());

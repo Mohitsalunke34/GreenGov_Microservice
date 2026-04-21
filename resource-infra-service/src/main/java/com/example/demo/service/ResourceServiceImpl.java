@@ -95,11 +95,18 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteResource(long resourceId) {
-		if (!resourceRepository.existsById(resourceId)) {
-			throw new ResourceNotFoundException("Cannot delete: Resource ID " + resourceId + " does not exist.");
-		}
-		resourceRepository.deleteById(resourceId);
+	    Resources resource = resourceRepository.findById(resourceId)
+	            .orElseThrow(() -> new ResourceNotFoundException(
+	                "Cannot delete: Resource ID " + resourceId + " does not exist."));
+	    if ("Allocated".equalsIgnoreCase(resource.getStatus())) {
+	        logger.warn("Deletion blocked: Resource ID {} is currently 'Allocated'", resourceId);
+	        throw new ValidationException("Cannot delete resource: It is currently 'Allocated' to a project.");
+	    }
+
+	    resourceRepository.deleteById(resourceId);
+	    logger.info("Resource ID {} successfully deleted.", resourceId);
 	}
 
 	@Override

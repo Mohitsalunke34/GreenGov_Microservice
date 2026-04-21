@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.example.demo.dto.ProjectResponseDTO;
 
 
-@FeignClient(name = "PROJECT-SERVICE") 
+@FeignClient(name = "SUSTAINABLITYPROJECTSERVICE") 
 public interface ProjectClient {
 
 	/**

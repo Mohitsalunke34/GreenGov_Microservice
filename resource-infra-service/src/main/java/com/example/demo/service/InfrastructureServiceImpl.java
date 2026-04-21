@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Infrastructure;
 import com.example.demo.repository.InfrastructureRepository;
 
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class InfrastructureServiceImpl implements InfrastructureService {
 
 	private static final Logger logger = LoggerFactory.getLogger(InfrastructureServiceImpl.class);
-	
+	private static final List<String> ALLOWED_STATUSES = Arrays.asList("Planned", "Under Construction", "Operational");
 	private final InfrastructureRepository infraRepository;
 	private final ProjectClient projectClient;
 
@@ -67,9 +69,17 @@ public class InfrastructureServiceImpl implements InfrastructureService {
 	@Override
 	public InfrastructureResponseDTO updateStatus(InfrastructureStatusDTO dto) {
 		Infrastructure infra = infraRepository.findById(dto.getInfraId())
-				.orElseThrow(() -> new ResourceNotFoundException("Infrastructure not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Infrastructure not found with ID: " + dto.getInfraId()));
+
+		// Validation logic for specific status types
+		if (dto.getStatus() == null || !ALLOWED_STATUSES.contains(dto.getStatus())) {
+			logger.warn("Invalid status update attempt: {}", dto.getStatus());
+			throw new ValidationException("Invalid status. Allowed values: " + ALLOWED_STATUSES);
+		}
 
 		infra.setStatus(dto.getStatus());
+		logger.info("Infrastructure ID {} status updated to {}", dto.getInfraId(), dto.getStatus());
+		
 		return mapToResponseDTO(infraRepository.save(infra));
 	}
 
@@ -90,11 +100,23 @@ public class InfrastructureServiceImpl implements InfrastructureService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteInfrastructure(long infraId) {
-		if (!infraRepository.existsById(infraId)) {
-			throw new ResourceNotFoundException("Cannot delete: ID " + infraId + " not found.");
-		}
-		infraRepository.deleteById(infraId);
+	    Infrastructure infra = infraRepository.findById(infraId)
+	            .orElseThrow(() -> new ResourceNotFoundException("Cannot delete: ID " + infraId + " not found."));
+
+	    if ("Operational".equalsIgnoreCase(infra.getStatus())) {
+	        logger.warn("Delete blocked: Infrastructure ID {} is Operational.", infraId);
+	        throw new ValidationException("Access Denied: Operational infrastructure cannot be deleted from the system.");
+	    }
+	    
+	    if ("Under Construction".equalsIgnoreCase(infra.getStatus())) {
+	        logger.info("Audit Note: Deleting a project currently under construction (ID: {})", infraId);
+	    }
+
+	   
+	    infraRepository.deleteById(infraId);
+	    logger.info("Infrastructure ID {} successfully purged.", infraId);
 	}
 
 	/**

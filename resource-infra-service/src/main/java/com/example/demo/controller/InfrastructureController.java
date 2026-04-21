@@ -35,7 +35,7 @@ public class InfrastructureController {
 	/**
 	 * US: Allocate new infrastructure to a project. POST /api/infrastructure
 	 */
-	@PostMapping
+	@PostMapping("/create")
 	public ResponseEntity<InfrastructureResponseDTO> addInfra(@Valid @RequestBody InfrastructureCreateRequestDTO dto) {
 		logger.info("REST request to add infrastructure: {} for Project ID: {}", dto.getType(), dto.getProjectId());
 		InfrastructureResponseDTO response = service.addInfrastructure(dto);
@@ -73,7 +73,7 @@ public class InfrastructureController {
 	/**
 	 * US: View global infrastructure inventory. GET /api/infrastructure
 	 */
-	@GetMapping
+	@GetMapping("/get-all")
 	public ResponseEntity<List<InfrastructureResponseDTO>> getAll() {
 		logger.info("Fetching all infrastructure records.");
 		return ResponseEntity.ok(service.getAllInfrastructure());
