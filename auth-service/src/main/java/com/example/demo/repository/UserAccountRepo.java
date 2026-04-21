@@ -14,4 +14,5 @@ public interface UserAccountRepo extends JpaRepository<UserAccount, Long> {
 	List<UserAccount> findByPrimaryRoleIn(List<PrimaryRole> roles);
 
 	Optional<UserAccount> findByEmail(String email);
+
 }

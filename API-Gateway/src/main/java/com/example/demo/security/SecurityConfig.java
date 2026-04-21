@@ -32,15 +32,33 @@ public class SecurityConfig {
 						.requestMatchers("/actuator/**").permitAll().requestMatchers("/api/participants/**").permitAll()
 
 						// ✅ PUBLIC AUTH ENDPOINTS (INCLUDING REGISTER)
-						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/**").permitAll()
+
+						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/auth/login").permitAll()
+						
+						.requestMatchers("/api/resources/**").permitAll()
+						
+						.requestMatchers("/api/infrastructure/**").permitAll()
+						
+						.requestMatchers("/api/notifications/**").permitAll()
+
+						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/auth/login").permitAll()
+
+						.requestMatchers("/api/incentives/**").permitAll().requestMatchers("/api/incentives")
+						.permitAll().requestMatchers("/api/disbursements/**").permitAll()
+						.requestMatchers("/api/disbursements").permitAll()
 
 						.requestMatchers("/api/programs/**").permitAll()
+
+
+						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/**").permitAll()
+
 
 						.requestMatchers("/api/applications/**").permitAll().requestMatchers("/api/applications")
 						.permitAll()
 
-						.requestMatchers("/api/projects/**").permitAll().requestMatchers("/api/projects").permitAll()
-
+						.requestMatchers("/api/projects").permitAll().requestMatchers("/api/projects/**").permitAll()
+						.requestMatchers("/api/compliance").permitAll().requestMatchers("/api/compliance/**").permitAll()
+						.requestMatchers("/api/audits").permitAll().requestMatchers("/api/audits/**").permitAll()
 						// ✅ everything else requires JWT
 						.anyRequest().authenticated());
 
