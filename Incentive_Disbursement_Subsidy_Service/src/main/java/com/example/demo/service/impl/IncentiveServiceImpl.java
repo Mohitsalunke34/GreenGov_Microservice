@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.demo.client.OfficerClient;
 import com.example.demo.client.ProgramClient;
@@ -191,7 +192,7 @@ public class IncentiveServiceImpl implements IncentiveService {
 	}
 
 	@Override
-	public List<IncentiveResponseDTO> getByBeneficiary(Long beneficiaryId) {
+	public List<IncentiveResponseDTO> getByBeneficiary(@PathVariable Long beneficiaryId) {
 		return incentiveRepo.findByBeneficiaryId(beneficiaryId).stream().map(IncentiveMapper::toDTO).toList();
 	}
 
@@ -232,15 +233,12 @@ public class IncentiveServiceImpl implements IncentiveService {
 		return metrics;
 	}
 
-//	@Override
-//	public IncentiveResponseDTO getByApplication(Long applicationId) {
-//		log.debug("Fetching incentive for application: {}", applicationId);
-//		ProgramApplication app = appRepo.findById(applicationId)
-//				.orElseThrow(() -> new IllegalArgumentException("Application not found"));
-//
-//		return incentiveRepo.findByApplication(app)
-//				.map(IncentiveMapper::toDTO)
-//				.orElseThrow(() -> new IllegalArgumentException("No incentive found"));
-//	}
+	@Override
+	@Transactional(readOnly = true)
+	public IncentiveResponseDTO getByApplication(Long applicationId) {
+
+		return incentiveRepo.findByApplicationId(applicationId).map(IncentiveMapper::toDTO)
+				.orElseThrow(() -> new RuntimeException("No incentive found for applicationId: " + applicationId));
+	}
 
 }

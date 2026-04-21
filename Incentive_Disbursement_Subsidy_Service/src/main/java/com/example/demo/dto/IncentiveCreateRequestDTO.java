@@ -11,10 +11,10 @@ public class IncentiveCreateRequestDTO {
 	private Long applicationId;
 
 //    @NotNull(message = "Program ID is required")
-//    private Long programId;
+    private Long programId;
 
 //    @NotNull(message = "Beneficiary ID is required")
-//    private Long beneficiaryId;
+    private Long beneficiaryId;
 
 	@NotNull(message = "Amount is required")
 	@Min(value = 0, message = "Amount must be positive")

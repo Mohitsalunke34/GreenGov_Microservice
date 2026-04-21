@@ -12,17 +12,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EnergyProgramResponseDto {
 
-    private Long programId;
+	private Long programId;
+	private String title;
+	private String description;
+	private LocalDate startDate;
+	private LocalDate endDate;
 
-    private String title;
+	private BigDecimal budget;
+	private BigDecimal remainingProgramBudget; // ✅ FIXED NAME
 
-    private String description;
-
-    private LocalDate startDate;
-
-    private LocalDate endDate;
-
-    private BigDecimal budget;
-
-    private String status;
+	private String status;
 }

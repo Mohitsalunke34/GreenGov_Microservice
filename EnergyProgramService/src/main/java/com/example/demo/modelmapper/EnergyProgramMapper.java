@@ -14,6 +14,9 @@ public final class EnergyProgramMapper {
 		}
 
 		return new EnergyProgramResponseDto(entity.getProgramId(), entity.getTitle(), entity.getDescription(),
-				entity.getStartDate(), entity.getEndDate(), entity.getBudget(), entity.getStatus());
+				entity.getStartDate(), entity.getEndDate(), entity.getBudget(), entity.getRemainingProgramBudget(), // ✅
+																													// ADD
+																													// THIS
+				entity.getStatus());
 	}
 }

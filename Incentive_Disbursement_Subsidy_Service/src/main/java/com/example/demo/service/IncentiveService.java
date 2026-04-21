@@ -13,6 +13,7 @@ public interface IncentiveService {
 
 	// Fetch incentive for a specific application
 //	Optional<Incentive> findByApplicationId(Long applicationId);
+	 IncentiveResponseDTO getByApplication(Long applicationId);
 
 	// Fetch all incentives for a beneficiary (citizen/business)
 	List<IncentiveResponseDTO> getByBeneficiary(Long participantId);

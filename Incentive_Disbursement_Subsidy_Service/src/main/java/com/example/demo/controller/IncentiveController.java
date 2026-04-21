@@ -39,7 +39,7 @@ public class IncentiveController {
 	/**
 	 * CREATE INCENTIVE Officer ID comes from API Gateway / Auth service
 	 */
-	@PostMapping
+	@PostMapping("/create")
 	public ResponseEntity<IncentiveResponseDTO> createIncentive(@RequestHeader("X-Officer-User-Id") Long officerUserId,
 			@RequestBody @Valid IncentiveCreateRequestDTO dto) {
 
@@ -54,15 +54,15 @@ public class IncentiveController {
 	/**
 	 * FETCH INCENTIVE BY APPLICATION ID One application → one incentive
 	 */
-//    @GetMapping("/application/{applicationId}")
-//    public ResponseEntity<IncentiveResponseDTO> getByApplication(
-//            @PathVariable Long applicationId
-//    ) {
-//
-//        return ResponseEntity.ok(
-//                incentiveService.getByApplication(applicationId)
-//        );
-//    }
+    @GetMapping("/application/{applicationId}")
+    public ResponseEntity<IncentiveResponseDTO> getByApplication(
+            @PathVariable Long applicationId
+    ) {
+
+        return ResponseEntity.ok(
+                incentiveService.getByApplication(applicationId)
+        );
+    }
 
 	/**
 	 * FETCH ALL INCENTIVES FOR A BENEFICIARY
@@ -76,7 +76,7 @@ public class IncentiveController {
 	/**
 	 * FETCH INCENTIVE BY ID
 	 */
-	@GetMapping("/{incentiveId}")
+	@GetMapping("/fetchById/{incentiveId}")
 	public ResponseEntity<IncentiveResponseDTO> getByIncentiveId(@PathVariable Long incentiveId) {
 
 		return ResponseEntity.ok(incentiveService.getByIncentiveId(incentiveId));
@@ -85,7 +85,7 @@ public class IncentiveController {
 	/**
 	 * FETCH ALL INCENTIVES (ADMIN / AUDIT)
 	 */
-	@GetMapping
+	@GetMapping("/fetchAllIncentives")
 	public ResponseEntity<List<IncentiveResponseDTO>> getAllIncentives() {
 
 		return ResponseEntity.ok(incentiveService.getAllIncentives());
@@ -94,7 +94,7 @@ public class IncentiveController {
 	/**
 	 * DELETE INCENTIVE IMPORTANT: - Does NOT refund budget (business decision)
 	 */
-	@DeleteMapping("/{incentiveId}")
+	@DeleteMapping("/deleteById/{incentiveId}")
 	public ResponseEntity<IncentiveResponseDTO> deleteIncentive(@PathVariable Long incentiveId) {
 
 		log.warn("Microservice request → Delete Incentive | IncentiveId={}", incentiveId);
@@ -107,7 +107,7 @@ public class IncentiveController {
 	/**
 	 * Reporting & Analytics endpoint Used by Reports microservice
 	 */
-	@GetMapping("/report-metrics")
+	@GetMapping("/fetch/report-metrics")
 	public Map<String, Object> getIncentiveReportMetrics() {
 		return incentiveService.getIncentiveReportMetrics();
 	}

@@ -12,7 +12,6 @@ import com.example.demo.exception.ProjectNotFound;
 import com.example.demo.model.EnergyProgram;
 import com.example.demo.modelmapper.EnergyProgramMapper;
 import com.example.demo.repository.EnergyProgramRepository;
-import com.example.demo.service.EnergyProgramService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +53,7 @@ public class EnergyProgramServiceImpl implements EnergyProgramService {
 		program.setStartDate(dto.getStartDate());
 		program.setEndDate(dto.getEndDate());
 		program.setBudget(dto.getBudget());
-		program.setRemainingProgramBudget(dto.getBudget()); 
+		program.setRemainingProgramBudget(dto.getBudget());
 		program.setStatus(dto.getStatus());
 
 		EnergyProgram saved = programRepo.save(program);
@@ -111,45 +110,40 @@ public class EnergyProgramServiceImpl implements EnergyProgramService {
 	/* ================= BUDGET DEDUCTION ================= */
 
 	@Override
-	public EnergyProgramResponseDto deductBudget(Long programId, BigDecimal amount)
-	        throws ProjectNotFound {
+	public EnergyProgramResponseDto deductBudget(Long programId, BigDecimal amount) throws ProjectNotFound {
 
-	    if (amount == null || amount.signum() <= 0) {
-	        throw new IllegalArgumentException("Budget deduction amount must be positive");
-	    }
+		if (amount == null || amount.signum() <= 0) {
+			throw new IllegalArgumentException("Budget deduction amount must be positive");
+		}
 
-	    EnergyProgram program = fetchProgram(programId);
+		EnergyProgram program = fetchProgram(programId);
 
-	    // Initialize remaining budget if null
-	    if (program.getRemainingProgramBudget() == null) {
-	        program.setRemainingProgramBudget(program.getBudget());
-	    }
+		// Initialize remaining budget if null
+		if (program.getRemainingProgramBudget() == null) {
+			program.setRemainingProgramBudget(program.getBudget());
+		}
 
-	    // Check sufficient balance
-	    if (amount.compareTo(program.getRemainingProgramBudget()) > 0) {
-	        throw new IllegalStateException("Insufficient program budget");
-	    }
+		// Check sufficient balance
+		if (amount.compareTo(program.getRemainingProgramBudget()) > 0) {
+			throw new IllegalStateException("Insufficient program budget");
+		}
 
-	    // Deduct budget
-	    BigDecimal updatedRemainingBudget =
-	            program.getRemainingProgramBudget().subtract(amount);
+		// Deduct budget
+		BigDecimal updatedRemainingBudget = program.getRemainingProgramBudget().subtract(amount);
 
-	    program.setRemainingProgramBudget(updatedRemainingBudget);
+		program.setRemainingProgramBudget(updatedRemainingBudget);
 
-	    // If remaining budget is zero → mark program as INACTIVE
-	    if (updatedRemainingBudget.compareTo(BigDecimal.ZERO) == 0) {
-	        program.setStatus("INACTIVE");
-	        log.info("Program ID {} marked as INACTIVE due to zero remaining budget", programId);
-	    }
+		// If remaining budget is zero → mark program as INACTIVE
+		if (updatedRemainingBudget.compareTo(BigDecimal.ZERO) == 0) {
+			program.setStatus("INACTIVE");
+			log.info("Program ID {} marked as INACTIVE due to zero remaining budget", programId);
+		}
 
-	    EnergyProgram updated = programRepo.save(program);
+		EnergyProgram updated = programRepo.save(program);
 
-	    log.info(
-	        "Deducted {} from program ID {}. Remaining budget: {}",
-	        amount, programId, updatedRemainingBudget
-	    );
+		log.info("Deducted {} from program ID {}. Remaining budget: {}", amount, programId, updatedRemainingBudget);
 
-	    return EnergyProgramMapper.toDto(updated);
+		return EnergyProgramMapper.toDto(updated);
 	}
 
 	/* ================= INTERNAL HELPERS ================= */

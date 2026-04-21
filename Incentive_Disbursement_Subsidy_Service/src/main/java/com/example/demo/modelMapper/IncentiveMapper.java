@@ -6,7 +6,7 @@ import com.example.demo.model.Incentive;
 public class IncentiveMapper {
 
     private IncentiveMapper() {
-        // Private constructor to prevent instantiation
+        // Prevent instantiation
     }
 
     public static IncentiveResponseDTO toDTO(Incentive entity) {
@@ -15,22 +15,26 @@ public class IncentiveMapper {
         }
 
         IncentiveResponseDTO dto = new IncentiveResponseDTO();
-        
-        // Direct mappings from ID fields
+
+        // ID mappings
         dto.setIncentiveId(entity.getIncentiveId());
-        dto.setApplicationId(entity.getApplicationId()); // Changed from .getApplication().getApplicationId()
-        dto.setProgramId(entity.getProgramId());         // Changed from .getProgram().getProgramId()
-        dto.setBeneficiaryId(entity.getBeneficiaryId()); // Changed from .getBeneficiary().getId()
-        
+        dto.setApplicationId(entity.getApplicationId());
+        dto.setProgramId(entity.getProgramId());
+        dto.setBeneficiaryId(entity.getBeneficiaryId());
+
+        // Amount mappings ✅
         dto.setAmount(entity.getAmount());
+        dto.setRemainingAmount(entity.getRemainingAmount()); // ✅ THIS WAS MISSING
+
+        // Meta
         dto.setSanctionedDate(entity.getSanctionedDate());
         dto.setStatus(entity.getStatus());
 
-        // Null check for optional ID field
+        // Optional approved-by mapping
         if (entity.getApprovedBy() != null) {
-            dto.setApprovedByUserId(entity.getApprovedBy()); // Changed from .getApprovedBy().getId()
+            dto.setApprovedByUserId(entity.getApprovedBy());
         }
-        
+
         return dto;
     }
 }

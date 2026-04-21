@@ -83,7 +83,7 @@ public class DisbursementController {
     /**
      * GET: Fetch a specific disbursement under an incentive.
      */
-    @GetMapping("/{incentiveId}/{disbursementId}")
+    @GetMapping("/fetchByIncentiveId&disbursementId/{incentiveId}/{disbursementId}")
     public ResponseEntity<DisbursementResponseDTO> getDisbursementById(
             @PathVariable Long incentiveId,
             @PathVariable Long disbursementId

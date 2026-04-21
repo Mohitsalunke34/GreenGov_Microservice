@@ -76,13 +76,15 @@ public class EnergyProgramController {
 
 	/* ================= BUDGET ================= */
 
+
 	@PutMapping("/{id}/deduct-budget")
-	public ResponseEntity<EnergyProgramResponseDto> deductProgramBudget(@PathVariable Long programId,
+	public ResponseEntity<EnergyProgramResponseDto> deductProgramBudget(@PathVariable("id") Long programId, // ✅ FIX
 			@RequestParam BigDecimal amount) throws ProjectNotFound {
 
 		log.info("REST request to deduct {} from program ID {}", amount, programId);
 		return ResponseEntity.ok(service.deductBudget(programId, amount));
 	}
+
 
 	/* ================= DELETE ================= */
 

@@ -8,9 +8,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.client.ProgramClient;
 import com.example.demo.dto.BudgetSummaryDTO;
 import com.example.demo.dto.DisbursementProcessResponse;
 import com.example.demo.dto.DisbursementResponseDTO;
+import com.example.demo.dto.ProgramDTO;
 import com.example.demo.exception.InvalidDisbursementException;
 import com.example.demo.exception.InvalidIncentiveException;
 import com.example.demo.model.Disbursement;
@@ -31,11 +33,13 @@ public class DisbursementServiceImpl implements DisbursementService {
 
     private final DisbursementRepository disbursementRepo;
     private final IncentiveRepository incentiveRepo;
+    private final ProgramClient programClient;
 
     // ============================
     // DISBURSE INCENTIVE
     // ============================
     @Override
+    @Transactional
     public DisbursementProcessResponse disburse(
             Long incentiveId,
             Double amount,
@@ -53,13 +57,12 @@ public class DisbursementServiceImpl implements DisbursementService {
                     "Incentive is not eligible for disbursement");
         }
 
-        // Remaining amount validation
         if (amount > incentive.getRemainingAmount()) {
             throw new InvalidDisbursementException(
                     "Requested amount exceeds remaining incentive balance");
         }
 
-        // Update remaining amount
+        // 1️⃣ Update remaining incentive
         double remaining = incentive.getRemainingAmount() - amount;
         incentive.setRemainingAmount(remaining);
 
@@ -69,7 +72,7 @@ public class DisbursementServiceImpl implements DisbursementService {
             incentive.setStatus("PARTIALLY_DISBURSED");
         }
 
-        // Create disbursement record
+        // 2️⃣ Create Disbursement
         Disbursement disbursement = new Disbursement();
         disbursement.setIncentive(incentive);
         disbursement.setOfficerUserId(officerUserId);
@@ -80,15 +83,23 @@ public class DisbursementServiceImpl implements DisbursementService {
         incentiveRepo.save(incentive);
         Disbursement saved = disbursementRepo.save(disbursement);
 
-        // History
+        // 3️⃣ History
         List<DisbursementResponseDTO> history =
                 disbursementRepo.findByIncentive(incentive)
                         .stream()
                         .map(DisbursementMapper::toDTO)
                         .toList();
 
-        // Budget summary (read-only info)
+        // 4️⃣ Fetch program AFTER deduction (read-only)
+        ProgramDTO program =
+                programClient.getProgramById(incentive.getProgramId());
+
+        // 5️⃣ Budget summary ✅ (FULLY POPULATED)
         BudgetSummaryDTO summary = new BudgetSummaryDTO();
+        summary.setProgramId(incentive.getProgramId());
+        summary.setBaseBudget(program.getBudget());
+        summary.setRemainingProgramBudget(program.getRemainingProgramBudget());
+        summary.setTotalDisbursedSoFar(BigDecimal.valueOf(amount)); // THIS PAYMENT
         summary.setRemainingIncentive(BigDecimal.valueOf(remaining));
 
         return new DisbursementProcessResponse(
@@ -138,4 +149,6 @@ public class DisbursementServiceImpl implements DisbursementService {
 
         return DisbursementMapper.toDTO(disbursement);
     }
+
+	
 }
