@@ -33,4 +33,18 @@ public interface IncentiveRepository extends JpaRepository<Incentive, Long> {
     // 6. Updated Query to use the simple long field 'programId'
     @Query("SELECT SUM(i.amount) FROM Incentive i WHERE i.programId = :programId")
     BigDecimal sumAmountByProgramId(@Param("programId") Long programId);
+    
+    
+
+    // ✅ Count approved / partially / completed incentives
+    Long countByStatusIn(List<String> statuses);
+
+    // ✅ Sum of sanctioned amounts
+    @Query("SELECT COALESCE(SUM(i.amount), 0) FROM Incentive i")
+    Double sumTotalAmount();
+
+    // ✅ Sum of disbursed amounts (amount - remainingAmount)
+    @Query("SELECT COALESCE(SUM(i.amount - i.remainingAmount), 0) FROM Incentive i")
+    Double sumDisbursedAmount();
+
 }
