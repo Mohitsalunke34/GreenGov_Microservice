@@ -41,7 +41,7 @@ public class SecurityConfig {
 						
 						.requestMatchers("/api/notifications/**").permitAll()
 
-						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/auth/login").permitAll()
+						.requestMatchers("/api/auth/**", "/api/auth/register", "/api/admin/auth/login").permitAll()
 
 						.requestMatchers("/api/incentives/**").permitAll().requestMatchers("/api/incentives")
 						.permitAll().requestMatchers("/api/disbursements/**").permitAll()
