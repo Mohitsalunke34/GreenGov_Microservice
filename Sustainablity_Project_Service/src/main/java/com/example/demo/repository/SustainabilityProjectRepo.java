@@ -9,4 +9,6 @@ import com.example.demo.model.SustainabilityProject;
 public interface SustainabilityProjectRepo extends JpaRepository<SustainabilityProject, Long> {
 
 	List<SustainabilityProject> findByStatus(String status);
+	
+	Long countByStatus(String status);
 }
