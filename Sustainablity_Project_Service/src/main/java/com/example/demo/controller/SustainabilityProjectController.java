@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.SustainabilityProjectRequestDto;
 import com.example.demo.dto.SustainabilityProjectResponseDto;
 import com.example.demo.exception.ProjectNotFound;
+import com.example.demo.repository.SustainabilityProjectRepo;
 import com.example.demo.service.SustainabilityProjectService;
 
 import jakarta.validation.Valid;
@@ -28,9 +31,12 @@ import lombok.extern.slf4j.Slf4j;
 public class SustainabilityProjectController {
 
 	private final SustainabilityProjectService projectService;
+	private final SustainabilityProjectRepo projectRepo;
 
-	public SustainabilityProjectController(SustainabilityProjectService projectService) {
+	public SustainabilityProjectController(SustainabilityProjectService projectService,
+			SustainabilityProjectRepo projectRepo) {
 		this.projectService = projectService;
+		this.projectRepo = projectRepo;
 	}
 
 	/* ================= CREATE ================= */
@@ -95,6 +101,21 @@ public class SustainabilityProjectController {
 	@GetMapping("/{id}/exists")
 	public ResponseEntity<Boolean> projectExists(@PathVariable Long id) {
 		return ResponseEntity.ok(projectService.projectExists(id));
+	}
+
+	@GetMapping("/report-metrics")
+	public Map<String, Object> getProjectReportMetrics() {
+
+		long totalProjects = projectRepo.count();
+		long activeProjects = projectRepo.countByStatus("ACTIVE");
+		long completedProjects = projectRepo.countByStatus("COMPLETED");
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("totalProjects", (int) totalProjects);
+		response.put("activeProjects", (int) activeProjects);
+		response.put("completedProjects", (int) completedProjects);
+
+		return response;
 	}
 
 }
