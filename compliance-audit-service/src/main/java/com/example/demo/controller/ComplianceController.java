@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.ErrorResponseDTO;
 import com.example.demo.dto.compliance_audit.ComplianceRecordCreateRequestDTO;
 import com.example.demo.dto.compliance_audit.ComplianceResponseDTO;
+import com.example.demo.model.Enums.ComplianceResult;
 import com.example.demo.model.Enums.ComplianceSubjectType;
+import com.example.demo.repo.ComplianceRecordRepository;
 import com.example.demo.service.ComplianceService;
 
 import jakarta.validation.Valid;
@@ -28,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class ComplianceController {
 
 	private final ComplianceService service;
+	private final ComplianceRecordRepository complianceRepo;
 
 	// ✅ Create compliance record
 	@PostMapping
@@ -63,4 +68,22 @@ public class ComplianceController {
 
 		return ResponseEntity.ok(service.getBySubject(subjectType, subjectId));
 	}
+
+	@GetMapping("/report-metrics")
+	public Map<String, Object> getComplianceReportMetrics() {
+
+		long totalAudits = complianceRepo.count();
+
+		long passed = complianceRepo.countByResult(ComplianceResult.PASS);
+
+		long failed = complianceRepo.countByResult(ComplianceResult.FAIL);
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("totalAudits", (int) totalAudits);
+		response.put("compliant", (int) passed);
+		response.put("nonCompliant", (int) failed);
+
+		return response;
+	}
+
 }

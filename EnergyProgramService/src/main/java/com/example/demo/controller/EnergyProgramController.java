@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.EnergyProgramRequestDto;
 import com.example.demo.dto.EnergyProgramResponseDto;
 import com.example.demo.exception.ProjectNotFound;
+import com.example.demo.repository.EnergyProgramRepository;
 import com.example.demo.service.EnergyProgramService;
 
 import jakarta.validation.Valid;
@@ -31,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EnergyProgramController {
 
 	private final EnergyProgramService service;
+	private final EnergyProgramRepository programRepo;
 
 	/* ================= READ ================= */
 
@@ -96,5 +100,25 @@ public class EnergyProgramController {
 	@GetMapping("/{id}/exists")
 	public ResponseEntity<Boolean> programExists(@PathVariable Long id) {
 		return ResponseEntity.ok(service.programExists(id));
+	}
+
+	@GetMapping("/report-metrics")
+	public Map<String, Object> getProgramReportMetrics() {
+
+		long totalPrograms = programRepo.count();
+		long activePrograms = programRepo.countByStatus("ACTIVE");
+
+		Double totalBudget = programRepo.sumTotalBudget();
+
+		Double remainingBudget = programRepo.sumRemainingBudget();
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("totalPrograms", (int) totalPrograms);
+		response.put("activePrograms", (int) activePrograms);
+		response.put("totalBudget", totalBudget);
+		response.put("remainingBudget", remainingBudget);
+
+		return response;
+
 	}
 }
