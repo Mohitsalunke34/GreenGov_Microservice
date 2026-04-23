@@ -1,0 +1,277 @@
+
+GREEN GOV PROJECT – COMPLETE ENTITY & MAPPING GUIDE
+===================================================
+
+This document explains ALL the entities used in the GreenGov project and how
+they are connected to each other using JPA/Hibernate mappings. It is written
+for beginners, so each relationship explains:
+- WHY the entities are connected
+- WHY a particular mapping type is used (OneToOne, OneToMany, ManyToOne)
+- WHICH SIDE OWNS THE RELATIONSHIP
+- WHICH COLUMN ACTUALLY STORES THE FOREIGN KEY
+
+---------------------------------------------------------------------
+CORE DESIGN PRINCIPLE – SINGLE SOURCE OF TRUTH (SSOT)
+---------------------------------------------------------------------
+
+• UserAccount is the SINGLE SOURCE OF TRUTH for every logged-in user.
+• Citizens, Business Owners, and Officers all authenticate using UserAccount.
+• Role-specific data is kept in separate profile tables to avoid duplication.
+
+---------------------------------------------------------------------
+1. USER & PROFILE MODULE (AUTHENTICATION + REGISTRATION)
+---------------------------------------------------------------------
+
+1.1 UserAccount (user_accounts table)
+-------------------------------------
+Purpose:
+- Stores login credentials and global identity of every user.
+
+Important Fields:
+- id (PK)
+- username
+- passwordHash
+- email
+- primaryRole (CITIZEN / BUSINESS_OWNER / OFFICER)
+
+Mappings:
+- OneToOne → ParticipantProfile
+  WHY: A user can be either a citizen or business owner.
+  WHY OneToOne: One user has exactly one participant profile.
+  FK Location: participant_profiles.user_id
+
+- OneToOne → OfficerProfile
+  WHY: Officers need extra approval-based information.
+  WHY OneToOne: One officer user has exactly one officer profile.
+  FK Location: officer_profiles.user_id
+
+---------------------------------------------------------------------
+1.2 ParticipantProfile (participant_profiles table)
+---------------------------------------------------------------------
+Purpose:
+- Stores citizen/business-specific information.
+
+Fields:
+- id (PK)
+- entityType (CITIZEN / BUSINESS)
+- legalName
+- address
+
+Mappings:
+- ManyToOne ← Incentive
+  WHY: One participant can receive many incentives.
+  FK Location: incentives.beneficiary_id
+
+- ManyToOne ← ProgramApplication
+  WHY: One participant can submit multiple applications.
+  FK Location: program_application.applicant_id
+
+---------------------------------------------------------------------
+1.3 OfficerProfile (officer_profiles table)
+---------------------------------------------------------------------
+Purpose:
+- Stores officer-specific information and approval status.
+
+Fields:
+- officerType (DISBURSEMENT_OFFICER, COMPLIANCE_OFFICER, AUDIT_MANAGER)
+- status (PENDING / APPROVED / REJECTED)
+
+Mappings:
+- OneToOne ← UserAccount
+  WHY: Officer identity is still a user.
+
+---------------------------------------------------------------------
+2. PROGRAM & PROJECT MODULE
+---------------------------------------------------------------------
+
+2.1 EnergyProgram (energy_program table)
+----------------------------------------
+Purpose:
+- Defines a government renewable/sustainability program.
+
+Fields:
+- programId (PK)
+- title
+- budget
+- status
+
+Mappings:
+- OneToMany ← ProgramApplication
+  WHY: One program can receive many applications.
+  FK Location: program_application.program_id
+
+- OneToMany ← Incentive
+  WHY: One program can issue many incentives.
+  FK Location: incentives.program_id
+
+---------------------------------------------------------------------
+2.2 ProgramApplication (program_application table)
+---------------------------------------------------------------------
+Purpose:
+- Represents a citizen/business applying to a program.
+
+Fields:
+- applicationId (PK)
+- applicant_id
+- program_id
+- submittedDate
+
+Mappings:
+- ManyToOne → ParticipantProfile
+  WHY: Many applications can belong to one participant.
+
+- ManyToOne → EnergyProgram
+  WHY: Many applications can belong to one program.
+
+- OneToOne ← Incentive
+  WHY: One application can produce at most one incentive.
+  FK Location: incentives.application_id
+
+---------------------------------------------------------------------
+2.3 SustainabilityProject (sustainability_projects table)
+---------------------------------------------------------------------
+Purpose:
+- Represents a physical or logical green project.
+
+Fields:
+- projectId (PK)
+- title
+- budget
+
+Mappings:
+- OneToMany ← Infrastructure
+- OneToMany ← Resources
+
+WHY: One project uses many infrastructures and resources.
+
+---------------------------------------------------------------------
+3. INCENTIVE & DISBURSEMENT MODULE
+---------------------------------------------------------------------
+
+3.1 Incentive (incentives table)
+--------------------------------
+Purpose:
+- Represents sanctioned financial support.
+
+Fields:
+- incentiveId (PK)
+- application_id
+- program_id
+- beneficiary_id
+- approved_by_user_id
+- amount
+- status
+
+Mappings:
+- OneToOne → ProgramApplication
+  WHY: One application leads to one incentive.
+
+- ManyToOne → EnergyProgram
+  WHY: Many incentives belong to one program.
+
+- ManyToOne → ParticipantProfile
+  WHY: A participant may receive many incentives.
+
+- ManyToOne → UserAccount (approvedBy)
+  WHY: One officer can approve many incentives.
+
+- OneToMany ← Disbursement
+  WHY: One incentive can be paid in multiple installments.
+
+---------------------------------------------------------------------
+3.2 Disbursement (disbursements table)
+---------------------------------------------------------------------
+Purpose:
+- Represents actual money transfer.
+
+Fields:
+- disbursementId (PK)
+- incentive_id
+- officer_user_id
+- paymentDate
+
+Mappings:
+- ManyToOne → Incentive
+  WHY: Many disbursements can belong to one incentive.
+
+- ManyToOne → UserAccount
+  WHY: One officer can perform many disbursements.
+
+---------------------------------------------------------------------
+4. COMPLIANCE, AUDIT & REPORTING MODULE
+---------------------------------------------------------------------
+
+4.1 ComplianceRecord (compliance_record table)
+-----------------------------------------------
+Purpose:
+- Tracks compliance results for projects/programs/incentives.
+
+Fields:
+- subjectType
+- subjectId
+- participant_id
+- compliance_manager_user_id
+
+Mappings:
+- ManyToOne → ParticipantProfile
+  WHY: One participant can have many compliance checks.
+
+- ManyToOne → UserAccount (Compliance Officer)
+  WHY: One officer can manage many compliance records.
+
+---------------------------------------------------------------------
+4.2 Audit (audit table)
+-----------------------
+Purpose:
+- Represents audit lifecycle.
+
+Mappings:
+- ManyToOne → UserAccount (Auditor)
+  WHY: One auditor performs many audits.
+
+---------------------------------------------------------------------
+4.3 Report (report table)
+-------------------------
+Purpose:
+- Stores generated reports.
+
+Mappings:
+- ManyToOne → UserAccount (generatedBy)
+  WHY: One user can generate many reports.
+
+---------------------------------------------------------------------
+5. RESOURCE & INFRASTRUCTURE MODULE
+---------------------------------------------------------------------
+
+5.1 Infrastructure
+------------------
+- ManyToOne → SustainabilityProject
+  WHY: One project has many infrastructures.
+
+5.2 Resources
+-------------
+- ManyToOne → SustainabilityProject
+  WHY: One project consumes many resources.
+
+---------------------------------------------------------------------
+END-TO-END FLOW (SIMPLE)
+---------------------------------------------------------------------
+1. User registers → UserAccount created
+2. Citizen/Business → ParticipantProfile created
+3. Officer registers → OfficerProfile (PENDING)
+4. Admin approves officer
+5. Participant applies → ProgramApplication
+6. Officer approves → Incentive
+7. Officer disburses → Disbursement(s)
+8. Compliance & Audit records created
+9. Reports generated
+
+---------------------------------------------------------------------
+FINAL MENTAL MODEL FOR BEGINNERS
+---------------------------------------------------------------------
+• @ManyToOne = MANY rows here point to ONE row there
+• @OneToMany = ONE row here is referenced by MANY rows there
+• FK column ALWAYS exists on the @ManyToOne side
+• mappedBy means "I am NOT the owner"
+
+If you understand this document, you understand the full GreenGov data model.

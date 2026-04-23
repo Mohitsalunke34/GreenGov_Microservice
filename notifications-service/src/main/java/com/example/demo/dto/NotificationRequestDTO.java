@@ -19,7 +19,7 @@ public class NotificationRequestDTO {
 	@NotNull(message = "User ID is required")
 	private Long userId;
 
-	@NotBlank(message = "Email is required")
+	
 	@Email(message = "Invalid email format")
 	private String email;
 
@@ -30,4 +30,6 @@ public class NotificationRequestDTO {
 
 	@NotNull(message = "Category is required")
 	private Notification.Category category;
+	
+	private boolean sendEmail;
 }

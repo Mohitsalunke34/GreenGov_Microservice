@@ -49,7 +49,16 @@ public class Notification {
 	private LocalDateTime createdDate;
 
 	public enum Category {
-		SCHEME, SUBSIDY, PROJECT, COMPLIANCE
+	    SCHEME, 
+	    SUBSIDY, 
+	    PROJECT, 
+	    COMPLIANCE, 
+	    RESOURCE,           // General
+	    INFRASTRUCTURE,     // General
+	    RESOURCE_ALLOCATION, // Added
+	    RESOURCE_UPDATE,     // Added
+	    RESOURCE_DELETE,     // Added
+	    STATUS_CHANGE        // Added
 	}
 
 	public enum Status {

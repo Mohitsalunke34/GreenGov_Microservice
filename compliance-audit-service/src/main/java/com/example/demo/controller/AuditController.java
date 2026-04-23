@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ErrorResponseDTO;
 import com.example.demo.dto.compliance_audit.AuditCreateRequestDTO;
 import com.example.demo.dto.compliance_audit.AuditResponseDTO;
 import com.example.demo.model.Enums.AuditStatus;
@@ -29,10 +31,22 @@ public class AuditController {
 
 	// ✅ Start audit
 	@PostMapping
-	public ResponseEntity<AuditResponseDTO> startAudit(@RequestParam Long auditorUserId,
+	public ResponseEntity<?> startAudit(@RequestParam Long auditorUserId,
 			@RequestBody @Valid AuditCreateRequestDTO dto) {
+		try {
+			AuditResponseDTO response = service.startAudit(dto, auditorUserId);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(service.startAudit(dto, auditorUserId));
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+		} catch (IllegalArgumentException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(new ErrorResponseDTO(ex.getMessage(), LocalDateTime.now()));
+
+		} catch (IllegalStateException ex) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(new ErrorResponseDTO(ex.getMessage(), LocalDateTime.now()));
+		}
+
 	}
 
 	// ✅ Close audit

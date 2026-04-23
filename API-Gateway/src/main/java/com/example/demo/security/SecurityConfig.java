@@ -2,10 +2,12 @@ package com.example.demo.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -20,47 +22,44 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-		http
-				// ✅ CSRF MUST be disabled for APIs
-				.csrf(csrf -> csrf.disable())
-
+		http.csrf(csrf -> csrf.disable())
 				.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
 				.authorizeHttpRequests(auth -> auth
 
-						// ✅ ALWAYS allow actuator
-						.requestMatchers("/actuator/**").permitAll().requestMatchers("/api/participants/**").permitAll()
+						// ✅ PUBLIC ENDPOINTS
+						.requestMatchers("/actuator/**").permitAll().requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers("/api/admin/auth/login").permitAll()
 
-						// ✅ PUBLIC AUTH ENDPOINTS (INCLUDING REGISTER)
+						// ✅ PROGRAMS
+						.requestMatchers(HttpMethod.GET, "/api/programs/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/programs/**").hasAuthority("PROGRAM_MANAGER")
 
-						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/auth/login").permitAll()
-						
-						.requestMatchers("/api/resources/**").permitAll()
-						
-						.requestMatchers("/api/infrastructure/**").permitAll()
-						
-						.requestMatchers("/api/notifications/**").permitAll()
+						// ✅ PROJECTS
+						.requestMatchers(HttpMethod.POST, "/api/projects/**").hasAnyRole("CITIZEN", "BUSINESS_OWNER")
+						.requestMatchers(HttpMethod.PATCH, "/api/projects/**").hasAuthority("PROGRAM_MANAGER")
 
-						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/auth/login").permitAll()
+						// ✅ INFRASTRUCTURE
+						.requestMatchers(HttpMethod.POST, "/api/infrastructure/**").hasAuthority("PROGRAM_MANAGER")
+						.requestMatchers(HttpMethod.PATCH, "/api/infrastructure/**").hasAuthority("PROGRAM_MANAGER")
+						.requestMatchers(HttpMethod.DELETE, "/api/infrastructure/**").hasAuthority("PROGRAM_MANAGER")
+						.requestMatchers(HttpMethod.GET, "/api/infrastructure/**").authenticated()
 
-						.requestMatchers("/api/incentives/**").permitAll().requestMatchers("/api/incentives")
-						.permitAll().requestMatchers("/api/disbursements/**").permitAll()
-						.requestMatchers("/api/disbursements").permitAll()
+						// ✅ COMPLIANCE
+						.requestMatchers(HttpMethod.POST, "/api/compliance/**").hasAuthority("COMPLIANCE_OFFICER")
 
-						.requestMatchers("/api/programs/**").permitAll()
+						// ✅ AUDIT
+						.requestMatchers("/api/audits/**").hasAuthority("AUDIT_MANAGER")
 
+						// ✅ INCENTIVE
+						.requestMatchers(HttpMethod.POST, "/api/incentives/**").hasAuthority("DISBURSEMENT_OFFICER")
 
-						.requestMatchers("/api/auth/login", "/api/auth/register", "/api/admin/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/reports/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/reports/**").permitAll()
+						// ✅ EVERYTHING ELSE
+						.anyRequest().authenticated())
 
-
-						.requestMatchers("/api/applications/**").permitAll().requestMatchers("/api/applications")
-						.permitAll()
-
-						.requestMatchers("/api/projects").permitAll().requestMatchers("/api/projects/**").permitAll()
-						.requestMatchers("/api/compliance").permitAll().requestMatchers("/api/compliance/**").permitAll()
-						.requestMatchers("/api/audits").permitAll().requestMatchers("/api/audits/**").permitAll()
-						// ✅ everything else requires JWT
-						.anyRequest().authenticated());
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}

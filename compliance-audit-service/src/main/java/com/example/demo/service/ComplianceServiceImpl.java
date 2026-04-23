@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.clients.EnergyProgramClient;
 import com.example.demo.clients.IncentiveClient;
+import com.example.demo.clients.NotificationClient;
 import com.example.demo.clients.ParticipantClient;
 import com.example.demo.clients.SustainabilityProjectClient;
 import com.example.demo.clients.UserClient;
+import com.example.demo.dto.NotificationRequestDTO;
 import com.example.demo.dto.ParticipantBasicDTO;
 import com.example.demo.dto.UserBasicDTO;
 import com.example.demo.dto.compliance_audit.ComplianceRecordCreateRequestDTO;
@@ -22,10 +24,12 @@ import com.example.demo.repo.ComplianceRecordRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ComplianceServiceImpl implements ComplianceService {
 
 	private final ComplianceRecordRepository complianceRepo;
@@ -34,32 +38,25 @@ public class ComplianceServiceImpl implements ComplianceService {
 	private final SustainabilityProjectClient sustainabilityClient;
 	private final EnergyProgramClient programClient;
 	private final IncentiveClient incentiveClient;
+	private final NotificationClient notificationClient;
 
-	/**
-	 * Record a compliance result for a PROJECT / PROGRAM / INCENTIVE.
-	 */
 	@Override
 	public ComplianceResponseDTO recordCompliance(ComplianceRecordCreateRequestDTO dto, Long complianceOfficerUserId) {
 
-		// 1️⃣ Validate compliance officer (Auth Service)
+		// ✅ Validate officer
 		UserBasicDTO officer = userClient.getUserById(complianceOfficerUserId);
 
-		// 2️⃣ Validate participant (Profile Service)
+		// ✅ Validate participant
 		ParticipantBasicDTO participant = participantClient.getParticipant(dto.getParticipantId());
 
 		if (!participant.isVerified()) {
 			throw new IllegalStateException("Participant is not verified");
 		}
 
-		// 3️⃣ Parse and validate subject type
-		ComplianceSubjectType subjectType;
-		try {
-			subjectType = ComplianceSubjectType.valueOf(dto.getSubjectType());
-		} catch (IllegalArgumentException ex) {
-			throw new IllegalArgumentException("Invalid subjectType. Allowed values: PROJECT, PROGRAM, INCENTIVE");
-		}
+		// ✅ Parse subject type
+		ComplianceSubjectType subjectType = ComplianceSubjectType.valueOf(dto.getSubjectType());
 
-		// 4️⃣ Validate subject existence (Owner microservice)
+		// ✅ Validate subject existence
 		switch (subjectType) {
 		case PROJECT -> assertExists(sustainabilityClient.projectExists(dto.getSubjectId()), "Project not found");
 
@@ -68,7 +65,7 @@ public class ComplianceServiceImpl implements ComplianceService {
 		case INCENTIVE -> assertExists(incentiveClient.incentiveExists(dto.getSubjectId()), "Incentive not found");
 		}
 
-		// 5️⃣ Persist compliance record
+		// ✅ Persist compliance record
 		ComplianceRecord record = new ComplianceRecord();
 		record.setSubjectType(subjectType);
 		record.setSubjectId(dto.getSubjectId());
@@ -83,21 +80,18 @@ public class ComplianceServiceImpl implements ComplianceService {
 
 		ComplianceRecord saved = complianceRepo.save(record);
 
-		// 6️⃣ Map entity → minimal DTO
+		// ✅ Send notification (FAIL‑SAFE)
+		sendNotification("Compliance recorded for " + subjectType + " ID " + dto.getSubjectId() + " with result "
+				+ dto.getResult(), "COMPLIANCE", saved.getId());
+
 		return ComplianceMapper.toDTO(saved);
 	}
 
-	/**
-	 * Fetch all compliance records for a participant.
-	 */
 	@Override
 	public List<ComplianceResponseDTO> getByParticipant(Long participantId) {
 		return complianceRepo.findByParticipantId(participantId).stream().map(ComplianceMapper::toDTO).toList();
 	}
 
-	/**
-	 * Fetch all compliance records for a subject (PROJECT / PROGRAM / INCENTIVE).
-	 */
 	@Override
 	public List<ComplianceResponseDTO> getBySubject(ComplianceSubjectType subjectType, Long subjectId) {
 
@@ -105,10 +99,25 @@ public class ComplianceServiceImpl implements ComplianceService {
 				.map(ComplianceMapper::toDTO).toList();
 	}
 
-	// ✅ Small helper for existence validation
+	/* ================= HELPERS ================= */
+
 	private void assertExists(Boolean exists, String message) {
 		if (!Boolean.TRUE.equals(exists)) {
 			throw new IllegalArgumentException(message);
+		}
+	}
+
+	private void sendNotification(String message, String category, Long entityId) {
+		try {
+			NotificationRequestDTO request = NotificationRequestDTO.builder().userId(1L) // system/admin
+					.message(message).category(category).entityId(entityId).sendEmail(false).email("admin@greengov.com")
+					.build();
+
+			notificationClient.createNotification(request);
+			log.info("Compliance notification sent");
+
+		} catch (Exception ex) {
+			log.error("Compliance notification failed: {}", ex.getMessage());
 		}
 	}
 }

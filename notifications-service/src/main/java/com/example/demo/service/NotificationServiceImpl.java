@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.NotificationRequestDTO;
-import com.example.demo.exception.NotificationNotFoundException; // Updated Import
+import com.example.demo.exception.NotificationNotFoundException;
 import com.example.demo.model.Notification;
 import com.example.demo.repository.NotificationRepository;
 
@@ -19,8 +19,8 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Implementation of the Notification Service. Decoupled from User Service for
- * Microservice architecture.
+ * Implementation of the Notification Service. 
+ * Handles in-app notifications and conditional email alerts.
  */
 @Service
 @RequiredArgsConstructor
@@ -34,26 +34,39 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	@Transactional
 	public Notification createNotification(NotificationRequestDTO request) {
-		logger.info("Processing notification for User ID: {} | Category: {}", request.getUserId(),
-				request.getCategory());
+		logger.info("Processing notification for User ID: {} | Category: {} | SendEmail: {}", 
+				request.getUserId(), request.getCategory(), request.isSendEmail());
 
 		validateNotificationRequest(request);
 
-		Notification notification = Notification.builder().userId(request.getUserId()).entityId(request.getEntityId())
-				.message(request.getMessage()).category(request.getCategory()).status(Notification.Status.SENT).build();
+		// Always persist to database (In-App Notification)
+		Notification notification = Notification.builder()
+				.userId(request.getUserId())
+				.entityId(request.getEntityId())
+				.message(request.getMessage())
+				.category(request.getCategory())
+				.status(Notification.Status.SENT)
+				.build();
 
 		Notification saved = notificationRepository.save(notification);
+		logger.debug("In-app notification saved with ID: {}", saved.getNotificationId());
 
-		// Dispatch email asynchronously
-		this.sendEmailAsync(request.getEmail(), request.getMessage());
+		// Conditional Email Dispatch: Only if the request explicitly asks for it
+		if (request.isSendEmail()) {
+			logger.info("Priority alert detected. Dispatching email to: {}", request.getEmail());
+			this.sendEmailAsync(request.getEmail(), request.getMessage());
+		} else {
+			logger.info("Standard alert. Skipping email dispatch.");
+		}
 
 		return saved;
 	}
 
 	@Async
 	protected void sendEmailAsync(String email, String messageContent) {
+		// Safety check even if validation passed
 		if (email == null || email.isBlank()) {
-			logger.warn("No email address provided. Skipping SMTP dispatch.");
+			logger.warn("SMTP dispatch aborted: No email address provided.");
 			return;
 		}
 
@@ -101,7 +114,6 @@ public class NotificationServiceImpl implements NotificationService {
 	@Transactional
 	public void deleteNotification(Long notificationId) {
 		if (!notificationRepository.existsById(notificationId)) {
-			// Fixed the empty throw here
 			throw new NotificationNotFoundException("Notification ID " + notificationId + " not found.");
 		}
 		notificationRepository.deleteById(notificationId);
@@ -116,6 +128,10 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		if (request.getCategory() == null) {
 			throw new ValidationException("Category is required.");
+		}
+		// New validation: If sendEmail is true, we must have an email address
+		if (request.isSendEmail() && (request.getEmail() == null || request.getEmail().isBlank())) {
+			throw new ValidationException("Email address is required when 'sendEmail' is enabled.");
 		}
 	}
 }

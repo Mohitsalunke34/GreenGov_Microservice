@@ -6,8 +6,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.client.NotificationClient; // Added
 import com.example.demo.dto.EnergyProgramRequestDto;
 import com.example.demo.dto.EnergyProgramResponseDto;
+import com.example.demo.dto.NotificationRequestDTO; // Added
 import com.example.demo.exception.ProjectNotFound;
 import com.example.demo.model.EnergyProgram;
 import com.example.demo.modelmapper.EnergyProgramMapper;
@@ -23,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EnergyProgramServiceImpl implements EnergyProgramService {
 
 	private final EnergyProgramRepository programRepo;
+	private final NotificationClient notificationClient; // Added
 
 	/* ================= READ ================= */
 
@@ -59,6 +62,13 @@ public class EnergyProgramServiceImpl implements EnergyProgramService {
 		EnergyProgram saved = programRepo.save(program);
 		log.info("Created Energy Program ID {}", saved.getProgramId());
 
+		// Trigger Notification
+		sendInternalNotification(
+			"New Energy Program Created: " + saved.getTitle(), 
+			"PROGRAM_CREATION", 
+			saved.getProgramId()
+		);
+
 		return EnergyProgramMapper.toDto(saved);
 	}
 
@@ -78,8 +88,8 @@ public class EnergyProgramServiceImpl implements EnergyProgramService {
 		existing.setStatus(request.getStatus());
 
 		EnergyProgram updated = programRepo.save(existing);
-
 		log.info("Updated Energy Program ID {}", programId);
+
 		return EnergyProgramMapper.toDto(updated);
 	}
 
@@ -88,8 +98,17 @@ public class EnergyProgramServiceImpl implements EnergyProgramService {
 
 		EnergyProgram program = fetchProgram(programId);
 		program.setStatus(status);
+		
+		EnergyProgram updated = programRepo.save(program);
 
-		return EnergyProgramMapper.toDto(programRepo.save(program));
+		// Trigger Notification
+		sendInternalNotification(
+			"Program ID " + programId + " status updated to " + status, 
+			"PROGRAM_STATUS_UPDATE", 
+			programId
+		);
+
+		return EnergyProgramMapper.toDto(updated);
 	}
 
 	/* ================= DELETE ================= */
@@ -118,29 +137,30 @@ public class EnergyProgramServiceImpl implements EnergyProgramService {
 
 		EnergyProgram program = fetchProgram(programId);
 
-		// Initialize remaining budget if null
 		if (program.getRemainingProgramBudget() == null) {
 			program.setRemainingProgramBudget(program.getBudget());
 		}
 
-		// Check sufficient balance
 		if (amount.compareTo(program.getRemainingProgramBudget()) > 0) {
 			throw new IllegalStateException("Insufficient program budget");
 		}
 
-		// Deduct budget
 		BigDecimal updatedRemainingBudget = program.getRemainingProgramBudget().subtract(amount);
-
 		program.setRemainingProgramBudget(updatedRemainingBudget);
 
-		// If remaining budget is zero → mark program as INACTIVE
 		if (updatedRemainingBudget.compareTo(BigDecimal.ZERO) == 0) {
 			program.setStatus("INACTIVE");
 			log.info("Program ID {} marked as INACTIVE due to zero remaining budget", programId);
+			
+			// Alert notification for exhausted budget
+			sendInternalNotification(
+				"Urgent: Budget exhausted for program " + program.getTitle(), 
+				"BUDGET_EXHAUSTED", 
+				programId
+			);
 		}
 
 		EnergyProgram updated = programRepo.save(program);
-
 		log.info("Deducted {} from program ID {}. Remaining budget: {}", amount, programId, updatedRemainingBudget);
 
 		return EnergyProgramMapper.toDto(updated);
@@ -149,7 +169,6 @@ public class EnergyProgramServiceImpl implements EnergyProgramService {
 	/* ================= INTERNAL HELPERS ================= */
 
 	private EnergyProgram fetchProgram(Long programId) throws ProjectNotFound {
-
 		return programRepo.findById(programId)
 				.orElseThrow(() -> new ProjectNotFound("Energy Program not found with ID: " + programId));
 	}
@@ -160,4 +179,25 @@ public class EnergyProgramServiceImpl implements EnergyProgramService {
 		return programRepo.existsById(programId);
 	}
 
+	/**
+	 * Internal helper to dispatch notifications.
+	 * Switched 'logger' to 'log' for Slf4j consistency.
+	 */
+	private void sendInternalNotification(String message, String category, Long entityId) {
+		try {
+			NotificationRequestDTO notifyReq = NotificationRequestDTO.builder()
+					.userId(1L)
+					.message(message)
+					.category(category)
+					.entityId(entityId)
+					.sendEmail(false)
+					.email("admin@greengov.com")
+					.build();
+
+			notificationClient.createNotification(notifyReq);
+			log.info("Notification successfully sent to Notification-Service");
+		} catch (Exception e) {
+			log.error("DETAILED NOTIFICATION ERROR: ", e);
+		}
+	}
 }

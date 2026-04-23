@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.example.demo.dto.ProjectResponseDTO;
 
 
-@FeignClient(name = "SUSTAINABLITYPROJECTSERVICE") 
+@FeignClient(name = "SUSTAINABILITYPROJECTSERVICE") 
 public interface ProjectClient {
 
 	/**
@@ -16,6 +16,6 @@ public interface ProjectClient {
 	 * * @param id The project ID to look up.
 	 * @return ResponseEntity containing the ProjectResponseDTO.
 	 */
-	@GetMapping("/api/projects/{id}")
-	ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable("id") long id);
+	@GetMapping("/api/projects/{projectId}")
+	ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable("projectId") Long projectId);
 }
