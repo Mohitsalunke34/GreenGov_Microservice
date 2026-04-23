@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +12,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ErrorResponseDTO;
 import com.example.demo.dto.client.OfficerDTO;
 import com.example.demo.model.OfficerProfile;
 import com.example.demo.service.OfficerApprovalService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/admin/officers")
 public class OfficerApprovalController {
@@ -25,22 +31,33 @@ public class OfficerApprovalController {
 	}
 
 	@GetMapping("/pending")
-	public List<OfficerProfile> pending() {
-		return service.pendingOfficers();
+	public ResponseEntity<List<OfficerProfile>> pending() {
+		log.info("Fetching pending officers");
+		return ResponseEntity.ok(service.pendingOfficers());
 	}
 
 	@PostMapping("/{id}/approve")
-	public void approve(@PathVariable Long id) {
-		service.approveOfficer(id);
+	public ResponseEntity<?> approve(@PathVariable Long id) {
+
+		log.info("Approving officer profile id={}", id);
+
+		try {
+			service.approveOfficer(id);
+			return ResponseEntity.ok(Map.of("message", "Officer approved successfully"));
+
+		} catch (RuntimeException ex) {
+			log.warn("Approval failed: {}", ex.getMessage());
+			return ResponseEntity.status(404).body(new ErrorResponseDTO(ex.getMessage(), LocalDateTime.now()));
+		}
 	}
 
 	@GetMapping("/disbursement/active")
 	public ResponseEntity<List<OfficerDTO>> getActiveDisbursementOfficers(
 			@RequestHeader("X-Officer-User-Id") Long adminUserId) {
 
-		List<OfficerProfile> profiles = service.getActiveDisbursementOfficers();
+		log.info("Fetching active disbursement officers by adminUserId={}", adminUserId);
 
-		List<OfficerDTO> result = profiles.stream().map(profile -> {
+		List<OfficerDTO> result = service.getActiveDisbursementOfficers().stream().map(profile -> {
 			OfficerDTO dto = new OfficerDTO();
 			dto.setUserId(profile.getUser().getId());
 			dto.setUsername(profile.getUser().getUsername());

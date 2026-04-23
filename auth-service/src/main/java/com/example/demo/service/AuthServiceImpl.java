@@ -23,7 +23,9 @@ import com.example.demo.repository.UserAccountRepo;
 import com.example.demo.security.JwtService;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -45,7 +47,9 @@ public class AuthServiceImpl implements AuthService {
 	// ---------------- REGISTER ----------------
 	@Override
 	@Transactional
-	public void register(RegisterRequestDTO request) {
+	public Long register(RegisterRequestDTO request) {
+
+		log.info("Registering user={}", request.getUsername());
 
 		if (userRepo.findByUsername(request.getUsername()).isPresent()) {
 			throw new IllegalArgumentException("Username already exists");
@@ -61,12 +65,12 @@ public class AuthServiceImpl implements AuthService {
 				.passwordHash(encoder.encode(request.getPassword())).primaryRole(request.getPrimaryRole())
 				.active(active).build();
 
-		userRepo.save(user);
+		UserAccount savedUser = userRepo.save(user);
 
 		if (request.getPrimaryRole() == PrimaryRole.OFFICER) {
 
 			if (request.getOfficerType() == null) {
-				throw new RuntimeException("Officer type is required");
+				throw new IllegalArgumentException("Officer type is required");
 			}
 
 			OfficerProfile profile = OfficerProfile.builder().user(user).officerType(request.getOfficerType())
@@ -74,7 +78,14 @@ public class AuthServiceImpl implements AuthService {
 					.status(ProfileStatus.PENDING).build();
 
 			officerRepo.save(profile);
+
+			log.info("Officer profile created | userId={} | officerType={} | status={}", savedUser.getId(),
+					profile.getOfficerType(), profile.getStatus());
 		}
+
+		// RETURN USER ID
+		return savedUser.getId();
+
 	}
 
 	// ---------------- USER LOGIN ----------------
@@ -121,7 +132,6 @@ public class AuthServiceImpl implements AuthService {
 
 		Admin admin = adminRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("Admin not found"));
 
-		// Plain-text password comparison
 		if (!password.equals(admin.getPasswordHash())) {
 			throw new RuntimeException("Invalid admin credentials");
 		}
@@ -148,7 +158,7 @@ public class AuthServiceImpl implements AuthService {
 				.toList();
 	}
 
-	// for Compliance client
+	// ---------------- BASIC USER ----------------
 	@Override
 	public UserBasicDTO getUserBasicById(Long userId) {
 
@@ -158,6 +168,7 @@ public class AuthServiceImpl implements AuthService {
 		UserBasicDTO dto = new UserBasicDTO();
 		dto.setId(user.getId());
 		dto.setUsername(user.getUsername());
+		dto.setEmail(user.getEmail());
 		dto.setPrimaryRole(user.getPrimaryRole().name());
 		dto.setActive(user.isActive());
 

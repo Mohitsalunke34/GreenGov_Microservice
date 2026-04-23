@@ -11,4 +11,3 @@ public interface ComplianceClient {
     @GetMapping("/api/compliance/report-metrics")
     Map<String, Object> getComplianceReportMetrics();
 }
-

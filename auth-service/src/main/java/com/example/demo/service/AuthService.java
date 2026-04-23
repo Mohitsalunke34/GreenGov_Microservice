@@ -12,7 +12,7 @@ public interface AuthService {
 
 	String adminLogin(String username, String password);
 
-	void register(RegisterRequestDTO request);
+	Long register(RegisterRequestDTO request);
 
 	List<UserProfileDTO> getUserByPrimaryRole();
 

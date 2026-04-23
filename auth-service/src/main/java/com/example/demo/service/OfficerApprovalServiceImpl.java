@@ -10,6 +10,9 @@ import com.example.demo.model.Enums.ProfileStatus;
 import com.example.demo.model.OfficerProfile;
 import com.example.demo.repository.OfficerProfileRepo;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class OfficerApprovalServiceImpl implements OfficerApprovalService {
 
@@ -31,16 +34,15 @@ public class OfficerApprovalServiceImpl implements OfficerApprovalService {
 
 		profile.setStatus(ProfileStatus.APPROVED);
 		profile.setApprovedAt(LocalDateTime.now());
-
 		profile.getUser().setActive(true);
 
 		repo.save(profile);
+
+		log.info("Officer approved: profileId={}", id);
 	}
 
 	@Override
 	public List<OfficerProfile> getActiveDisbursementOfficers() {
-
 		return repo.findByOfficerTypeAndStatus(OfficerType.DISBURSEMENT_OFFICER, ProfileStatus.APPROVED);
 	}
-
 }

@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.IncentiveCreateRequestDTO;
 import com.example.demo.dto.IncentiveResponseDTO;
-import com.example.demo.repo.IncentiveRepository;
 import com.example.demo.service.IncentiveService;
 
 import jakarta.validation.Valid;
@@ -37,7 +35,6 @@ import lombok.extern.slf4j.Slf4j;
 public class IncentiveController {
 
 	private final IncentiveService incentiveService;
-	private final IncentiveRepository incentiveRepo;
 
 	/**
 	 * CREATE INCENTIVE Officer ID comes from API Gateway / Auth service
@@ -106,30 +103,10 @@ public class IncentiveController {
 	/**
 	 * Reporting & Analytics endpoint Used by Reports microservice
 	 */
-
-	  @GetMapping("/report-metrics")
-	    public Map<String, Object> getIncentiveReportMetrics() {
-
-	        Long totalIncentives = incentiveRepo.count();
-	        Long approvedIncentives =
-	                incentiveRepo.countByStatusIn(
-	                        List.of("APPROVED", "PARTIALLY_DISBURSED", "COMPLETED"));
-
-	        Double totalAmount =
-	                incentiveRepo.sumTotalAmount();
-
-	        Double disbursedAmount =
-	                incentiveRepo.sumDisbursedAmount();
-
-	        Map<String, Object> response = new HashMap<>();
-	        response.put("totalIncentives", totalIncentives.intValue());
-	        response.put("approvedIncentives", approvedIncentives.intValue());
-	        response.put("totalAmount", totalAmount);
-	        response.put("disbursedAmount", disbursedAmount);
-
-	        return response;
-	    }
-
+	@GetMapping("/fetch/report-metrics")
+	public Map<String, Object> getIncentiveReportMetrics() {
+		return incentiveService.getIncentiveReportMetrics();
+	}
 
 	/**
 	 * EXISTS CHECK Used by Compliance microservice via Feign

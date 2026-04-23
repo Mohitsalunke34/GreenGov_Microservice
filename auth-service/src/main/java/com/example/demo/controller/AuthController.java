@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ErrorResponseDTO;
 import com.example.demo.dto.RegisterRequestDTO;
 import com.example.demo.dto.RegisterResponseDTO;
 import com.example.demo.dto.UserProfileDTO;
@@ -19,6 +21,9 @@ import com.example.demo.dto.client.UserBasicDTO;
 import com.example.demo.model.Enums.PrimaryRole;
 import com.example.demo.service.AuthService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -29,34 +34,67 @@ public class AuthController {
 		this.service = service;
 	}
 
-	// Register
+	// ---------------- REGISTER ----------------
 	@PostMapping("/register")
-	public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO request) {
+	public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request) {
 
-		service.register(request);
+		log.info("Registration request for username={}", request.getUsername());
 
-		String msg = request.getPrimaryRole() == PrimaryRole.OFFICER ? "Registration successful. Await admin approval."
-				: "Registration successful. You can now login.";
+		try {
+			Long userId = service.register(request);
 
-		return ResponseEntity.ok(new RegisterResponseDTO(msg));
+			String msg = request.getPrimaryRole() == PrimaryRole.OFFICER
+					? "Registration successful. Await admin approval."
+					: "Registration successful. You can now login.";
+
+			return ResponseEntity.status(201).body(new RegisterResponseDTO(userId, msg));
+
+		} catch (IllegalArgumentException ex) {
+			log.warn("Registration failed: {}", ex.getMessage());
+			return ResponseEntity.status(409).body(new ErrorResponseDTO(ex.getMessage(), LocalDateTime.now()));
+
+		} catch (RuntimeException ex) {
+			log.error("Unexpected registration error", ex);
+			return ResponseEntity.status(400).body(new ErrorResponseDTO(ex.getMessage(), LocalDateTime.now()));
+		}
 	}
 
+	// ---------------- USER LOGIN ----------------
 	@PostMapping("/login")
-	public Map<String, String> login(@RequestParam String username, @RequestParam String password) {
-		return Map.of("token", service.userLogin(username, password));
+	public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+
+		log.info("Login attempt for username={}", username);
+
+		try {
+			String token = service.userLogin(username, password);
+			return ResponseEntity.ok(Map.of("token", token));
+
+		} catch (RuntimeException ex) {
+			log.warn("Login failed for username={}: {}", username, ex.getMessage());
+			return ResponseEntity.status(401).body(new ErrorResponseDTO(ex.getMessage(), LocalDateTime.now()));
+		}
 	}
 
+	// ---------------- FETCH USERS ----------------
 	@GetMapping("/findAllCitizenAndBusiness")
-	public List<UserProfileDTO> getUserByPrimaryRole() {
-		return service.getUserByPrimaryRole();
+	public ResponseEntity<List<UserProfileDTO>> getUserByPrimaryRole() {
+		log.info("Fetching citizen and business users");
+		return ResponseEntity.ok(service.getUserByPrimaryRole());
 	}
 
-	/**
-	 * BASIC USER INFO Used by other microservices via Feign
-	 */
+	// ---------------- BASIC USER INFO (Feign) ----------------
 	@GetMapping("/users/{id}/basic")
-	public ResponseEntity<UserBasicDTO> getUserBasic(@PathVariable Long id) {
+	public ResponseEntity<?> getUserBasic(@PathVariable Long id) {
 
-		return ResponseEntity.ok(service.getUserBasicById(id));
+		log.info("Fetching basic user info for id={}", id);
+
+		try {
+			UserBasicDTO dto = service.getUserBasicById(id);
+			return ResponseEntity.ok(dto);
+
+		} catch (RuntimeException ex) {
+			log.warn("User not found: {}", ex.getMessage());
+			return ResponseEntity.status(404).body(new ErrorResponseDTO(ex.getMessage(), LocalDateTime.now()));
+		}
 	}
 }
