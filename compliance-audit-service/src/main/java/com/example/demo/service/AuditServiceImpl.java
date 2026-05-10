@@ -11,6 +11,7 @@ import com.example.demo.dto.NotificationRequestDTO;
 import com.example.demo.dto.UserBasicDTO;
 import com.example.demo.dto.compliance_audit.AuditCreateRequestDTO;
 import com.example.demo.dto.compliance_audit.AuditResponseDTO;
+import com.example.demo.exception.ServiceUnavailableException;
 import com.example.demo.mapper.AuditMapper;
 import com.example.demo.model.Audit;
 import com.example.demo.model.Enums.AuditStatus;
@@ -18,6 +19,8 @@ import com.example.demo.model.Enums.ReportScope;
 import com.example.demo.repo.AuditRepository;
 import com.example.demo.repo.ComplianceRecordRepository;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +55,7 @@ public class AuditServiceImpl implements AuditService {
 
 		Audit saved = auditRepo.save(audit);
 
-		sendNotification("Audit started for Compliance ID " + dto.getComplianceId(), "AUDIT", saved.getId());
+		notifyAudit("Audit started for Compliance ID " + dto.getComplianceId(), "AUDIT", saved.getId());
 
 		return AuditMapper.toDTO(saved);
 	}
@@ -71,7 +74,7 @@ public class AuditServiceImpl implements AuditService {
 			throw new IllegalArgumentException("Invalid final audit status");
 		}
 
-		UserBasicDTO auditor = userClient.getUserById(auditorUserId);
+		UserBasicDTO auditor = fetchAuthService(auditorUserId);
 
 		audit.setStatus(finalStatus);
 		audit.setClosedDate(Instant.now());
@@ -79,8 +82,7 @@ public class AuditServiceImpl implements AuditService {
 
 		Audit saved = auditRepo.save(audit);
 
-		sendNotification("Audit " + finalStatus + " for Compliance ID " + audit.getComplianceId(), "AUDIT",
-				saved.getId());
+		notifyAudit("Audit " + finalStatus + " for Compliance ID " + audit.getComplianceId(), "AUDIT", saved.getId());
 
 		return AuditMapper.toDTO(saved);
 	}
@@ -101,18 +103,32 @@ public class AuditServiceImpl implements AuditService {
 	}
 
 	/* ================= HELPER ================= */
+	// For auth service circuit breaker
+	@CircuitBreaker(name = "authService", fallbackMethod = "authFallBack")
+	private UserBasicDTO fetchAuthService(Long userId) {
+		return userClient.getUserById(userId);
+	}
 
-	private void sendNotification(String message, String category, Long entityId) {
-		try {
-			NotificationRequestDTO request = NotificationRequestDTO.builder().userId(1L) // system/admin
-					.message(message).category(category).entityId(entityId).sendEmail(false).email("admin@greengov.com")
-					.build();
+	// Fallback method for auth
+	private UserBasicDTO authFallBack(Long userId) {
+		log.error("Auth Service unavailable auditor Id {}", userId);
+		throw new ServiceUnavailableException("Auth Service unavailable");
+	}
+	// Fallback method for notification service
 
-			notificationClient.createNotification(request);
-			log.info("Audit notification sent");
+	private void notificationFallback(String message, String category, Long entityId, Throwable ex) {
 
-		} catch (Exception ex) {
-			log.error("Audit notification failed: {}", ex.getMessage());
-		}
+		log.warn("Audit notification skipped (service down) | auditId={}", entityId, ex);
+	}
+
+	@CircuitBreaker(name = "notificationService", fallbackMethod = "notificationFallback")
+	@Retry(name = "notificationService")
+	private void notifyAudit(String message, String category, Long entityId) {
+
+		NotificationRequestDTO request = NotificationRequestDTO.builder().userId(1L).message(message).category(category)
+				.entityId(entityId).sendEmail(false).email("admin@greengov.com").build();
+
+		notificationClient.createNotification(request);
+		log.info("Audit notification sent | entityId={}", entityId);
 	}
 }

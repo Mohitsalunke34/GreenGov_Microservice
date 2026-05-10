@@ -1,3 +1,4 @@
+//Cryptographically validates token & extracts data
 package com.example.demo.security;
 
 import java.nio.charset.StandardCharsets;

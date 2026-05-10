@@ -29,7 +29,7 @@ public class AuditController {
 
 	private final AuditService service;
 
-	// ✅ Start audit
+	// Start audit
 	@PostMapping
 	public ResponseEntity<?> startAudit(@RequestParam Long auditorUserId,
 			@RequestBody @Valid AuditCreateRequestDTO dto) {
@@ -49,7 +49,7 @@ public class AuditController {
 
 	}
 
-	// ✅ Close audit
+	// Close audit
 	@PostMapping("/{auditId}/close")
 	public ResponseEntity<AuditResponseDTO> closeAudit(@PathVariable Long auditId, @RequestParam AuditStatus status,
 			@RequestParam Long auditorUserId) {
@@ -57,21 +57,21 @@ public class AuditController {
 		return ResponseEntity.ok(service.closeAudit(auditId, status, auditorUserId));
 	}
 
-	// ✅ Get audits by officer
+	// Get audits by officer
 	@GetMapping("/by-officer/{officerId}")
 	public ResponseEntity<List<AuditResponseDTO>> getByOfficer(@PathVariable Long officerId) {
 
 		return ResponseEntity.ok(service.getByOfficer(officerId));
 	}
 
-	// ✅ Get audits by compliance
+	// Get audits by compliance
 	@GetMapping("/by-compliance/{complianceId}")
 	public ResponseEntity<List<AuditResponseDTO>> getByCompliance(@PathVariable Long complianceId) {
 
 		return ResponseEntity.ok(service.getByCompliance(complianceId));
 	}
 
-	// ✅ Get audits by status
+	// Get audits by status
 	@GetMapping
 	public ResponseEntity<List<AuditResponseDTO>> getByStatus(@RequestParam AuditStatus status) {
 
