@@ -17,9 +17,6 @@ public class ComplianceRecordCreateRequestDTO {
 	@NotNull(message = "subjectId is required")
 	private Long subjectId;
 
-	/** Participant ID (from Profile Service) */
-	@NotNull(message = "participantId is required")
-	private Long participantId;
 
 	/** PASS / FAIL / NEEDS_REVIEW */
 	@NotBlank(message = "result is required")

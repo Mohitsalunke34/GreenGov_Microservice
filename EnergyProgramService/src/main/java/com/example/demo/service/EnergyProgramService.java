@@ -24,4 +24,6 @@ public interface EnergyProgramService {
 	EnergyProgramResponseDto deductBudget(Long programId, BigDecimal amount) throws ProjectNotFound;
 
 	boolean programExists(Long programId);
+
+	EnergyProgramResponseDto getProgramByTitle(String title) throws ProjectNotFound;
 }

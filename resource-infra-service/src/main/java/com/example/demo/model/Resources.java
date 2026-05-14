@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,22 +13,20 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "resources")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Resources {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long resourceId;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long resourceId;
+    private Long projectId;
+    
+    // Add this field
+    private String projectTitle; 
 
-	@Column(name = "project_id", nullable = false)
-	private long projectId;
-
-	@Column(nullable = false)
-	private String type;
-
-	private double quantity;
-
-	private String status;
+    private String type;
+    private Double quantity;
+    private String status;
 }

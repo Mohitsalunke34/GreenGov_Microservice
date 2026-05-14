@@ -47,16 +47,16 @@ public class ParticipantProfile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Document> documents = new ArrayList<>();
     
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 200 ,unique = true)
     private String legalName;
     
     @Column(columnDefinition = "TEXT")
     private String address;
     
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "contact_info", columnDefinition = "JSON")
     private String contactInfoJson;
     
     @Enumerated(EnumType.STRING)
-    @Column(length = 30)
+    @Column(nullable = false, length = 20)
     private VerificationStatus status;
 }

@@ -101,10 +101,12 @@ public class AuthServiceImpl implements AuthService {
 		if (!user.isActive()) {
 			throw new RuntimeException("Account inactive. Await admin approval.");
 		}
-
+		// setting the ROLE for token to be interpreted later through JWT
 		List<String> roles = List.of("ROLE_" + user.getPrimaryRole().name());
 		List<String> authorities = new ArrayList<>();
 
+		// checking if the user is an officer so that we can store the authority field
+		// in authorities arraylist
 		if (user.getPrimaryRole() == PrimaryRole.OFFICER) {
 
 			OfficerProfile profile = user.getOfficerProfile();
@@ -120,6 +122,7 @@ public class AuthServiceImpl implements AuthService {
 		userRepo.save(user);
 
 		Map<String, Object> claims = new HashMap<>();
+		claims.put("userId", user.getId());
 		claims.put("roles", roles);
 		claims.put("authorities", authorities);
 
@@ -140,9 +143,13 @@ public class AuthServiceImpl implements AuthService {
 			throw new RuntimeException("Admin account inactive");
 		}
 
-		Map<String, Object> claims = Map.of("roles", List.of("ROLE_ADMIN"), "authorities", List.of("ADMIN"));
+		Map<String, Object> claims = new HashMap<>();
+		claims.put("userId", admin.getId());
+		claims.put("roles", List.of("ROLE_ADMIN"));
+		claims.put("authorities", List.of("ADMIN"));
 
 		return jwtService.generateToken(username, claims);
+
 	}
 
 	// ---------------- FETCH USERS ----------------

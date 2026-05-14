@@ -5,23 +5,18 @@ import com.example.demo.model.ProgramApplication;
 
 public final class ProgramApplicationMapper {
 
-    private ProgramApplicationMapper() {
-        // Prevent instantiation
-    }
+	private ProgramApplicationMapper() {
+		// Prevent instantiation
+	}
 
-    public static ProgramApplicationResponseDto toDto(
-            ProgramApplication entity) {
+	public static ProgramApplicationResponseDto toDto(ProgramApplication entity) {
 
-        if (entity == null) {
-            return null;
-        }
+		if (entity == null) {
+			return null;
+		}
 
-        return new ProgramApplicationResponseDto(
-                entity.getApplicationId(),
-                entity.getApplicantId(),               
-                entity.getProgram().getProgramId(),     
-                entity.getSubmittedDate(),
-                entity.getStatus()
-        );
-    }
+		return new ProgramApplicationResponseDto(entity.getApplicationId(), entity.getApplicantId(),
+				entity.getProgram().getProgramId(), entity.getSubmittedDate(),
+				(entity.getProgram() != null) ? entity.getProgram().getTitle() : "Unknown Program", entity.getStatus());
+	}
 }

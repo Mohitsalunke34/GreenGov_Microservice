@@ -12,12 +12,13 @@ import com.example.demo.client.ParticipantStatusClient;
 import com.example.demo.dto.NotificationRequestDTO; // Added
 import com.example.demo.dto.ProgramApplicationRequestDto;
 import com.example.demo.dto.ProgramApplicationResponseDto;
+import com.example.demo.dto.client_dto.ApprovedApplicationLookupDTO;
+import com.example.demo.exception.ProjectNotFound;
 import com.example.demo.model.EnergyProgram;
 import com.example.demo.model.ProgramApplication;
 import com.example.demo.modelmapper.ProgramApplicationMapper;
 import com.example.demo.repository.EnergyProgramRepository;
 import com.example.demo.repository.ProgramApplicationRepository;
-import com.example.demo.exception.ProjectNotFound;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,11 +66,8 @@ public class ProgramApplicationServiceImpl implements ProgramApplicationService 
 		log.info("Application {} created with status PENDING", saved.getApplicationId());
 
 		// Trigger Notification
-		sendInternalNotification(
-			"New application submitted for program: " + program.getProgramId(), 
-			"APPLICATION_SUBMITTED", 
-			saved.getApplicationId()
-		);
+		sendInternalNotification("New application submitted for program: " + program.getProgramId(),
+				"APPLICATION_SUBMITTED", saved.getApplicationId());
 
 		return ProgramApplicationMapper.toDto(saved);
 	}
@@ -108,11 +106,8 @@ public class ProgramApplicationServiceImpl implements ProgramApplicationService 
 		ProgramApplication saved = applicationRepository.save(application);
 
 		// Trigger Notification
-		sendInternalNotification(
-			"Your application " + applicationId + " has been APPROVED", 
-			"APPLICATION_APPROVED", 
-			applicationId
-		);
+		sendInternalNotification("Your application " + applicationId + " has been APPROVED", "APPLICATION_APPROVED",
+				applicationId);
 
 		return ProgramApplicationMapper.toDto(saved);
 	}
@@ -126,13 +121,20 @@ public class ProgramApplicationServiceImpl implements ProgramApplicationService 
 		ProgramApplication saved = applicationRepository.save(application);
 
 		// Trigger Notification
-		sendInternalNotification(
-			"Your application " + applicationId + " has been REJECTED", 
-			"APPLICATION_REJECTED", 
-			applicationId
-		);
+		sendInternalNotification("Your application " + applicationId + " has been REJECTED", "APPLICATION_REJECTED",
+				applicationId);
 
 		return ProgramApplicationMapper.toDto(saved);
+	}
+
+	@Override
+	public List<ApprovedApplicationLookupDTO> getApprovedApplicationsByParticipant(Long participantId) {
+
+		return applicationRepository.findByApplicantIdAndStatus(participantId, "APPROVED").stream()
+				.map(app -> new ApprovedApplicationLookupDTO(app.getApplicationId(), // ✅ OK
+						app.getProgram().getProgramId(), // ✅ FIXED
+						app.getApplicantId() // ✅ OK
+				)).collect(Collectors.toList());
 	}
 
 	/* ================= INTERNAL / HELPERS ================= */
@@ -144,13 +146,9 @@ public class ProgramApplicationServiceImpl implements ProgramApplicationService 
 
 	private void sendInternalNotification(String message, String category, Long entityId) {
 		try {
-			NotificationRequestDTO notifyReq = NotificationRequestDTO.builder()
-					.userId(1L) // Defaulting to system/admin user ID 1
-					.message(message)
-					.category(category)
-					.entityId(entityId)
-					.sendEmail(false)
-					.email("dummy@greengov.com")
+			NotificationRequestDTO notifyReq = NotificationRequestDTO.builder().userId(1L) // Defaulting to system/admin
+																							// user ID 1
+					.message(message).category(category).entityId(entityId).sendEmail(false).email("dummy@greengov.com")
 					.build();
 
 			notificationClient.createNotification(notifyReq);

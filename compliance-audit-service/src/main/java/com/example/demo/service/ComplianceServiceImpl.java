@@ -8,20 +8,22 @@ import org.springframework.stereotype.Service;
 import com.example.demo.clients.EnergyProgramClient;
 import com.example.demo.clients.IncentiveClient;
 import com.example.demo.clients.NotificationClient;
-import com.example.demo.clients.ParticipantClient;
 import com.example.demo.clients.SustainabilityProjectClient;
 import com.example.demo.clients.UserClient;
 import com.example.demo.dto.NotificationRequestDTO;
-import com.example.demo.dto.ParticipantBasicDTO;
 import com.example.demo.dto.UserBasicDTO;
+import com.example.demo.dto.client_dto.SubjectLookupDTO;
 import com.example.demo.dto.compliance_audit.ComplianceRecordCreateRequestDTO;
 import com.example.demo.dto.compliance_audit.ComplianceResponseDTO;
+import com.example.demo.exception.ServiceUnavailableException;
 import com.example.demo.mapper.ComplianceMapper;
 import com.example.demo.model.ComplianceRecord;
 import com.example.demo.model.Enums.ComplianceResult;
 import com.example.demo.model.Enums.ComplianceSubjectType;
 import com.example.demo.repo.ComplianceRecordRepository;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,43 +35,29 @@ import lombok.extern.slf4j.Slf4j;
 public class ComplianceServiceImpl implements ComplianceService {
 
 	private final ComplianceRecordRepository complianceRepo;
-	private final ParticipantClient participantClient;
 	private final UserClient userClient;
 	private final SustainabilityProjectClient sustainabilityClient;
 	private final EnergyProgramClient programClient;
 	private final IncentiveClient incentiveClient;
 	private final NotificationClient notificationClient;
 
+	// ===============================
+	// MAIN BUSINESS OPERATION
+	// ===============================
 	@Override
 	public ComplianceResponseDTO recordCompliance(ComplianceRecordCreateRequestDTO dto, Long complianceOfficerUserId) {
 
-		// ✅ Validate officer
-		UserBasicDTO officer = userClient.getUserById(complianceOfficerUserId);
+		log.info("Recording compliance | subjectType={} | subjectId={}", dto.getSubjectType(), dto.getSubjectId());
 
-		// ✅ Validate participant
-		ParticipantBasicDTO participant = participantClient.getParticipant(dto.getParticipantId());
+		UserBasicDTO officer = fetchOfficer(complianceOfficerUserId);
 
-		if (!participant.isVerified()) {
-			throw new IllegalStateException("Participant is not verified");
-		}
-
-		// ✅ Parse subject type
 		ComplianceSubjectType subjectType = ComplianceSubjectType.valueOf(dto.getSubjectType());
 
-		// ✅ Validate subject existence
-		switch (subjectType) {
-		case PROJECT -> assertExists(sustainabilityClient.projectExists(dto.getSubjectId()), "Project not found");
+		validateSubject(subjectType, dto.getSubjectId());
 
-		case PROGRAM -> assertExists(programClient.programExists(dto.getSubjectId()), "Program not found");
-
-		case INCENTIVE -> assertExists(incentiveClient.incentiveExists(dto.getSubjectId()), "Incentive not found");
-		}
-
-		// ✅ Persist compliance record
 		ComplianceRecord record = new ComplianceRecord();
 		record.setSubjectType(subjectType);
 		record.setSubjectId(dto.getSubjectId());
-		record.setParticipantId(dto.getParticipantId());
 		record.setComplianceManagerUserId(complianceOfficerUserId);
 		record.setResult(ComplianceResult.valueOf(dto.getResult()));
 		record.setNotes(dto.getNotes());
@@ -80,17 +68,15 @@ public class ComplianceServiceImpl implements ComplianceService {
 
 		ComplianceRecord saved = complianceRepo.save(record);
 
-		// ✅ Send notification (FAIL‑SAFE)
-		sendNotification("Compliance recorded for " + subjectType + " ID " + dto.getSubjectId() + " with result "
+		notifyCompliance("Compliance recorded for " + subjectType + " ID " + dto.getSubjectId() + " with result "
 				+ dto.getResult(), "COMPLIANCE", saved.getId());
 
 		return ComplianceMapper.toDTO(saved);
 	}
 
-	@Override
-	public List<ComplianceResponseDTO> getByParticipant(Long participantId) {
-		return complianceRepo.findByParticipantId(participantId).stream().map(ComplianceMapper::toDTO).toList();
-	}
+	// ===============================
+	// READ OPERATIONS
+	// ===============================
 
 	@Override
 	public List<ComplianceResponseDTO> getBySubject(ComplianceSubjectType subjectType, Long subjectId) {
@@ -99,25 +85,105 @@ public class ComplianceServiceImpl implements ComplianceService {
 				.map(ComplianceMapper::toDTO).toList();
 	}
 
-	/* ================= HELPERS ================= */
+	// ===============================
+	// REMOTE CALLS WITH RESILIENCE
+	// ===============================
 
-	private void assertExists(Boolean exists, String message) {
-		if (!Boolean.TRUE.equals(exists)) {
-			throw new IllegalArgumentException(message);
+	// ---- AUTH SERVICE (CRITICAL) ----
+	@CircuitBreaker(name = "authService", fallbackMethod = "authFallback")
+	private UserBasicDTO fetchOfficer(Long officerUserId) {
+		return userClient.getUserById(officerUserId);
+	}
+
+	private UserBasicDTO authFallback(Long officerUserId, Throwable ex) {
+		log.error("Auth service unavailable | officerId={}", officerUserId, ex);
+		throw new IllegalStateException("Authentication service unavailable");
+	}
+
+	// ---- SUBJECT VALIDATION (CRITICAL) ----
+	@CircuitBreaker(name = "subjectValidationService", fallbackMethod = "subjectFallback")
+	private void validateSubject(ComplianceSubjectType type, Long subjectId) {
+		try {
+			switch (type) {
+			case PROJECT -> assertExists(sustainabilityClient.projectExists(subjectId), "Project not found");
+
+			case PROGRAM -> assertExists(programClient.programExists(subjectId), "Program not found");
+
+			case INCENTIVE -> assertExists(incentiveClient.incentiveExists(subjectId), "Incentive not found");
+			}
+		} catch (feign.FeignException ex) {
+			throw new ServiceUnavailableException("Dependent service for " + type + " is currently unavailable");
 		}
 	}
 
-	private void sendNotification(String message, String category, Long entityId) {
-		try {
-			NotificationRequestDTO request = NotificationRequestDTO.builder().userId(1L) // system/admin
-					.message(message).category(category).entityId(entityId).sendEmail(false).email("admin@greengov.com")
-					.build();
+	private void subjectFallback(ComplianceSubjectType type, Long subjectId, Throwable ex) {
 
-			notificationClient.createNotification(request);
-			log.info("Compliance notification sent");
+		log.error("Subject validation service unavailable | type={} subjectId={}", type, subjectId, ex);
 
-		} catch (Exception ex) {
-			log.error("Compliance notification failed: {}", ex.getMessage());
+		throw new ServiceUnavailableException("Subject validation service is currently unavailable");
+	}
+
+	// Program Client call with circuit braker
+	@Override
+	@CircuitBreaker(name = "subjectLookupService", fallbackMethod = "programSubjectsFallback")
+	public List<SubjectLookupDTO> getProgramSubjects() {
+		return programClient.getProgramSubjects();
+	}
+
+	// fallback method for program
+	private List<SubjectLookupDTO> programSubjectsFallback(Throwable ex) {
+		log.error("Program subject lookup failed", ex);
+		throw new ServiceUnavailableException("Unable to fetch program list at the moment");
+	}
+
+	// Project Client call with circuit braker
+	@Override
+	@CircuitBreaker(name = "subjectLookupService", fallbackMethod = "projectSubjectsFallback")
+	public List<SubjectLookupDTO> getProjectSubjects() {
+		return sustainabilityClient.getProjectSubjects();
+	}
+
+	private List<SubjectLookupDTO> projectSubjectsFallback(Throwable ex) {
+		log.error("Project subject lookup failed", ex);
+		throw new ServiceUnavailableException("Unable to fetch project list at the moment");
+	}
+
+	// Incentive Client call with circuit braker
+	@Override
+	@CircuitBreaker(name = "subjectLookupService", fallbackMethod = "incentiveSubjectsFallback")
+	public List<SubjectLookupDTO> getIncentiveSubjects() {
+		return incentiveClient.getIncentiveSubjects();
+	}
+
+	@SuppressWarnings("unused")
+	private List<SubjectLookupDTO> incentiveSubjectsFallback(Throwable ex) {
+		log.error("Incentive subject lookup failed", ex);
+		throw new ServiceUnavailableException("Unable to fetch incentive list at the moment");
+	}
+
+	// ---- NOTIFICATION SERVICE (NON‑CRITICAL) ----
+	@CircuitBreaker(name = "notificationService", fallbackMethod = "notificationFallback")
+	@Retry(name = "notificationService")
+	private void notifyCompliance(String message, String category, Long entityId) {
+
+		NotificationRequestDTO request = NotificationRequestDTO.builder().userId(1L).message(message).category(category)
+				.entityId(entityId).sendEmail(false).email("admin@greengov.com").build();
+
+		notificationClient.createNotification(request);
+		log.info("Compliance notification sent | entityId={}", entityId);
+	}
+
+	private void notificationFallback(String message, String category, Long entityId, Throwable ex) {
+
+		log.warn("Notification skipped (service down) | entityId={}", entityId, ex);
+	}
+
+	// ===============================
+	// HELPERS
+	// ===============================
+	private void assertExists(Boolean exists, String message) {
+		if (!Boolean.TRUE.equals(exists)) {
+			throw new IllegalArgumentException(message);
 		}
 	}
 }

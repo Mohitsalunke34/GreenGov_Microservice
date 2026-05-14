@@ -1,0 +1,717 @@
+2026-05-14 07:54:38.622  INFO 26584 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Starting GreengovProfileServiceApplication using Java 21.0.8 with PID 26584 (C:\Users\2481294\Documents\workspace-spring-tools-for-eclipse-4.32.0.RELEASE\Proj_GreenGov\Green-Gov_Microservice\greengov-profile-service\target\classes started by 2481294 in C:\Users\2481294\Documents\workspace-spring-tools-for-eclipse-4.32.0.RELEASE\Proj_GreenGov\Green-Gov_Microservice\greengov-profile-service)
+2026-05-14 07:54:38.639 DEBUG 26584 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-05-14 07:54:38.641  INFO 26584 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : No active profile set, falling back to 1 default profile: "default"
+2026-05-14 07:54:38.766  INFO 26584 --- [restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8711
+2026-05-14 07:54:38.767  INFO 26584 --- [restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=greengov-profile-service, profiles=[default], label=null, version=c96fb38e74c79e863c48c242e57fab565c7a54e3, state=
+2026-05-14 07:54:38.783  INFO 26584 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-05-14 07:54:38.784  INFO 26584 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-05-14 07:54:43.544  INFO 26584 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-14 07:54:43.925  INFO 26584 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 357 ms. Found 2 JPA repository interfaces.
+2026-05-14 07:54:45.010  INFO 26584 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=935b8af3-8a5d-3247-8b45-c01f7fd1256b
+2026-05-14 07:54:47.015  INFO 26584 --- [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 9056 (http)
+2026-05-14 07:54:47.049  INFO 26584 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-14 07:54:47.050  INFO 26584 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-05-14 07:54:47.236  INFO 26584 --- [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 8450 ms
+2026-05-14 07:54:48.399  INFO 26584 --- [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-14 07:54:48.552  INFO 26584 --- [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-05-14 07:54:50.628  INFO 26584 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-14 07:54:50.911  INFO 26584 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-14 07:54:53.185  INFO 26584 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@40e9d735
+2026-05-14 07:54:53.189  INFO 26584 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-14 07:54:53.301  WARN 26584 --- [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-14 07:54:53.343  INFO 26584 --- [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/Greengov_Frontend?createDatabaseIfNotExist=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.44
+	Default catalog/schema: Greengov_Frontend/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-14 07:54:55.749  INFO 26584 --- [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-14 07:54:55.904 DEBUG 26584 --- [restartedMain] org.hibernate.SQL                        : alter table documents modify column verification_status enum ('PENDING','REJECTED','VERIFIED') not null
+2026-05-14 07:54:56.225 DEBUG 26584 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles modify column entity_type enum ('BUSINESS_OWNER','CITIZEN') not null
+2026-05-14 07:54:56.310 DEBUG 26584 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles modify column status enum ('PENDING','REJECTED','VERIFIED') not null
+2026-05-14 07:54:57.027  INFO 26584 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-14 07:54:57.530  INFO 26584 --- [restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-14 07:54:58.914  WARN 26584 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-14 07:54:59.435  INFO 26584 --- [restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'AUTH-SERVICE' URL not provided. Will try picking an instance via load-balancing.
+2026-05-14 07:55:04.297  INFO 26584 --- [restartedMain] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
+2026-05-14 07:55:04.608  WARN 26584 --- [restartedMain] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-05-14 07:55:04.868  INFO 26584 --- [restartedMain] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-05-14 07:55:04.936  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-05-14 07:55:04.945  INFO 26584 --- [restartedMain] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 07:55:04.974  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-14 07:55:04.974  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-14 07:55:04.975  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-14 07:55:04.975  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-14 07:55:04.975  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-14 07:55:04.976  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-05-14 07:55:04.976  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-14 07:55:05.672  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-14 07:55:05.676  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-05-14 07:55:05.682  INFO 26584 --- [restartedMain] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-05-14 07:55:05.686  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1778725505685 with initial instances count: 0
+2026-05-14 07:55:05.728  INFO 26584 --- [restartedMain] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application GREENGOV-PROFILE-SERVICE with eureka with status UP
+2026-05-14 07:55:05.729  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1778725505729, current=UP, previous=STARTING]
+2026-05-14 07:55:05.734  INFO 26584 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056: registering service...
+2026-05-14 07:55:05.780  INFO 26584 --- [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 9056 (http) with context path '/'
+2026-05-14 07:55:05.781  INFO 26584 --- [restartedMain] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 9056
+2026-05-14 07:55:05.832  INFO 26584 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Started GreengovProfileServiceApplication in 31.578 seconds (process running for 34.473)
+2026-05-14 07:55:05.838  INFO 26584 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056 - registration status: 204
+2026-05-14 07:55:05.838  WARN 26584 --- [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-05-14 07:55:05.838  WARN 26584 --- [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-05-14 07:55:35.682  INFO 26584 --- [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-14 07:55:35.683  INFO 26584 --- [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-14 07:55:35.683  INFO 26584 --- [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-14 07:55:35.683  INFO 26584 --- [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-14 07:55:35.683  INFO 26584 --- [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-14 07:55:35.683  INFO 26584 --- [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Application version is -1: false
+2026-05-14 07:55:35.683  INFO 26584 --- [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-14 07:55:35.716  INFO 26584 --- [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-14 08:00:04.982  INFO 26584 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 08:05:06.529  INFO 26584 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 08:10:06.532  INFO 26584 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 08:15:06.546  INFO 26584 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 08:20:06.551  INFO 26584 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 08:25:06.553  INFO 26584 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 09:16:15.093  WARN 26584 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=51m19s811ms758µs900ns).
+2026-05-14 09:17:20.766  WARN 26584 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m5s673ms558µs400ns).
+2026-05-14 09:20:15.464  INFO 26584 --- [http-nio-9056-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-14 09:20:15.480  INFO 26584 --- [http-nio-9056-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-14 09:20:15.576  INFO 26584 --- [http-nio-9056-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 84 ms
+2026-05-14 09:20:16.150  INFO 26584 --- [http-nio-9056-exec-1] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 1
+2026-05-14 09:20:16.166 DEBUG 26584 --- [http-nio-9056-exec-1] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 1
+2026-05-14 09:20:16.567 DEBUG 26584 --- [http-nio-9056-exec-1] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:16.936 DEBUG 26584 --- [http-nio-9056-exec-1] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:17.578  INFO 26584 --- [http-nio-9056-exec-6] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 1
+2026-05-14 09:20:17.578 DEBUG 26584 --- [http-nio-9056-exec-6] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 1
+2026-05-14 09:20:17.586 DEBUG 26584 --- [http-nio-9056-exec-6] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:17.594 DEBUG 26584 --- [http-nio-9056-exec-6] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:17.861  INFO 26584 --- [http-nio-9056-exec-7] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 3
+2026-05-14 09:20:17.870 DEBUG 26584 --- [http-nio-9056-exec-7] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 3
+2026-05-14 09:20:17.878 DEBUG 26584 --- [http-nio-9056-exec-7] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:17.894 DEBUG 26584 --- [http-nio-9056-exec-7] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:18.003  INFO 26584 --- [http-nio-9056-exec-8] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 3
+2026-05-14 09:20:18.011 DEBUG 26584 --- [http-nio-9056-exec-8] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 3
+2026-05-14 09:20:18.020 DEBUG 26584 --- [http-nio-9056-exec-8] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:18.028 DEBUG 26584 --- [http-nio-9056-exec-8] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:18.128  INFO 26584 --- [http-nio-9056-exec-9] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 4
+2026-05-14 09:20:18.128 DEBUG 26584 --- [http-nio-9056-exec-9] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 4
+2026-05-14 09:20:18.138 DEBUG 26584 --- [http-nio-9056-exec-9] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:18.145 DEBUG 26584 --- [http-nio-9056-exec-9] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:18.297  INFO 26584 --- [http-nio-9056-exec-10] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 4
+2026-05-14 09:20:18.297 DEBUG 26584 --- [http-nio-9056-exec-10] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 4
+2026-05-14 09:20:18.300 DEBUG 26584 --- [http-nio-9056-exec-10] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:18.332  INFO 26584 --- [http-nio-9056-exec-2] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 5
+2026-05-14 09:20:18.389 DEBUG 26584 --- [http-nio-9056-exec-2] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 5
+2026-05-14 09:20:18.397 DEBUG 26584 --- [http-nio-9056-exec-10] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:18.397 DEBUG 26584 --- [http-nio-9056-exec-2] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:18.405 DEBUG 26584 --- [http-nio-9056-exec-2] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:18.745  INFO 26584 --- [http-nio-9056-exec-4] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 5
+2026-05-14 09:20:18.745 DEBUG 26584 --- [http-nio-9056-exec-4] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 5
+2026-05-14 09:20:18.758 DEBUG 26584 --- [http-nio-9056-exec-4] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:18.771 DEBUG 26584 --- [http-nio-9056-exec-4] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:24.612  INFO 26584 --- [http-nio-9056-exec-5] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 1
+2026-05-14 09:20:24.612 DEBUG 26584 --- [http-nio-9056-exec-5] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 1
+2026-05-14 09:20:24.628 DEBUG 26584 --- [http-nio-9056-exec-5] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:24.628 DEBUG 26584 --- [http-nio-9056-exec-5] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:24.721  INFO 26584 --- [http-nio-9056-exec-3] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 1
+2026-05-14 09:20:24.721 DEBUG 26584 --- [http-nio-9056-exec-3] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 1
+2026-05-14 09:20:24.728 DEBUG 26584 --- [http-nio-9056-exec-3] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:24.737 DEBUG 26584 --- [http-nio-9056-exec-3] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:24.826  INFO 26584 --- [http-nio-9056-exec-1] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 3
+2026-05-14 09:20:24.835 DEBUG 26584 --- [http-nio-9056-exec-1] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 3
+2026-05-14 09:20:24.835 DEBUG 26584 --- [http-nio-9056-exec-1] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:24.850 DEBUG 26584 --- [http-nio-9056-exec-1] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:24.911  INFO 26584 --- [http-nio-9056-exec-6] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 3
+2026-05-14 09:20:24.911 DEBUG 26584 --- [http-nio-9056-exec-6] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 3
+2026-05-14 09:20:24.928 DEBUG 26584 --- [http-nio-9056-exec-6] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:25.012  INFO 26584 --- [http-nio-9056-exec-7] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 4
+2026-05-14 09:20:25.162 DEBUG 26584 --- [http-nio-9056-exec-7] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 4
+2026-05-14 09:20:25.170 DEBUG 26584 --- [http-nio-9056-exec-7] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:25.170 DEBUG 26584 --- [http-nio-9056-exec-6] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:25.178 DEBUG 26584 --- [http-nio-9056-exec-7] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:25.350  INFO 26584 --- [http-nio-9056-exec-8] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 4
+2026-05-14 09:20:25.350 DEBUG 26584 --- [http-nio-9056-exec-8] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 4
+2026-05-14 09:20:25.362 DEBUG 26584 --- [http-nio-9056-exec-8] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:25.379 DEBUG 26584 --- [http-nio-9056-exec-8] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:25.379  INFO 26584 --- [http-nio-9056-exec-9] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 5
+2026-05-14 09:20:25.383 DEBUG 26584 --- [http-nio-9056-exec-9] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 5
+2026-05-14 09:20:25.383 DEBUG 26584 --- [http-nio-9056-exec-9] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:25.396 DEBUG 26584 --- [http-nio-9056-exec-9] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:25.532  INFO 26584 --- [http-nio-9056-exec-2] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 5
+2026-05-14 09:20:25.996 DEBUG 26584 --- [http-nio-9056-exec-2] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 5
+2026-05-14 09:20:25.996 DEBUG 26584 --- [http-nio-9056-exec-2] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:20:26.011 DEBUG 26584 --- [http-nio-9056-exec-2] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:20:41.520 DEBUG 26584 --- [http-nio-9056-exec-10] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0
+2026-05-14 09:21:02.693  INFO 26584 --- [http-nio-9056-exec-4] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 1
+2026-05-14 09:21:02.693 DEBUG 26584 --- [http-nio-9056-exec-4] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 1
+2026-05-14 09:21:02.709 DEBUG 26584 --- [http-nio-9056-exec-4] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:21:02.727 DEBUG 26584 --- [http-nio-9056-exec-4] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:21:02.832  INFO 26584 --- [http-nio-9056-exec-5] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 1
+2026-05-14 09:21:02.832 DEBUG 26584 --- [http-nio-9056-exec-5] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 1
+2026-05-14 09:21:02.842 DEBUG 26584 --- [http-nio-9056-exec-5] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:21:02.864 DEBUG 26584 --- [http-nio-9056-exec-5] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:21:02.942  INFO 26584 --- [http-nio-9056-exec-3] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 3
+2026-05-14 09:21:02.942 DEBUG 26584 --- [http-nio-9056-exec-3] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 3
+2026-05-14 09:21:02.942 DEBUG 26584 --- [http-nio-9056-exec-3] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:21:02.958 DEBUG 26584 --- [http-nio-9056-exec-3] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:21:03.015  INFO 26584 --- [http-nio-9056-exec-1] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 3
+2026-05-14 09:21:03.015 DEBUG 26584 --- [http-nio-9056-exec-1] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 3
+2026-05-14 09:21:03.015 DEBUG 26584 --- [http-nio-9056-exec-1] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:21:03.105  INFO 26584 --- [http-nio-9056-exec-6] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 4
+2026-05-14 09:21:11.175 DEBUG 26584 --- [http-nio-9056-exec-6] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 4
+2026-05-14 09:21:11.175 DEBUG 26584 --- [http-nio-9056-exec-6] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:21:11.192 DEBUG 26584 --- [http-nio-9056-exec-1] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:21:11.201 DEBUG 26584 --- [http-nio-9056-exec-6] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:21:12.167  INFO 26584 --- [http-nio-9056-exec-7] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 5
+2026-05-14 09:21:12.167 DEBUG 26584 --- [http-nio-9056-exec-7] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 5
+2026-05-14 09:21:12.183 DEBUG 26584 --- [http-nio-9056-exec-7] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:21:12.183 DEBUG 26584 --- [http-nio-9056-exec-7] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:21:12.208  INFO 26584 --- [http-nio-9056-exec-8] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 4
+2026-05-14 09:21:12.208 DEBUG 26584 --- [http-nio-9056-exec-8] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 4
+2026-05-14 09:21:12.208 DEBUG 26584 --- [http-nio-9056-exec-8] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:21:12.228 DEBUG 26584 --- [http-nio-9056-exec-8] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:21:12.377  INFO 26584 --- [http-nio-9056-exec-9] c.c.g.p.c.ParticipantController          : Received request to fetch participant details for profile ID: 5
+2026-05-14 09:21:12.377 DEBUG 26584 --- [http-nio-9056-exec-9] c.c.g.p.s.impl.ParticipantServiceImpl    : Fetching participant details from database for profile ID: 5
+2026-05-14 09:21:12.377 DEBUG 26584 --- [http-nio-9056-exec-9] org.hibernate.SQL                        : select pp1_0.id,pp1_0.address,pp1_0.contact_info,pp1_0.entity_type,pp1_0.legal_name,pp1_0.status,pp1_0.user_id from participant_profiles pp1_0 where pp1_0.id=?
+2026-05-14 09:21:12.393 DEBUG 26584 --- [http-nio-9056-exec-9] org.hibernate.SQL                        : select d1_0.profile_id,d1_0.id,d1_0.document_type,d1_0.file_url,d1_0.uploaded_date,d1_0.verification_status from documents d1_0 where d1_0.profile_id=?
+2026-05-14 09:21:32.026  INFO 26584 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 09:26:32.034  INFO 26584 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 09:26:57.828  INFO 26584 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 3 class path changes (0 additions, 0 deletions, 3 modifications)
+2026-05-14 09:26:57.833  INFO 26584 --- [Thread-1] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application GREENGOV-PROFILE-SERVICE with eureka with status DOWN
+2026-05-14 09:26:57.833  INFO 26584 --- [Thread-1] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1778731017833, current=DOWN, previous=UP]
+2026-05-14 09:26:57.833  INFO 26584 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056: registering service...
+2026-05-14 09:26:57.843  INFO 26584 --- [Thread-1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-14 09:26:57.862  INFO 26584 --- [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-05-14 09:26:57.874  INFO 26584 --- [Thread-1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-14 09:26:57.884  INFO 26584 --- [Thread-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-05-14 09:26:57.893  INFO 26584 --- [Thread-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-05-14 09:26:57.895  INFO 26584 --- [Thread-1] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-05-14 09:26:57.917  INFO 26584 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056 - registration status: 204
+2026-05-14 09:26:57.919  INFO 26584 --- [Thread-1] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2026-05-14 09:26:58.117  INFO 26584 --- [Thread-1] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056 - deregister  status: 200
+2026-05-14 09:26:58.118  INFO 26584 --- [Thread-1] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2026-05-14 09:27:00.643  INFO 26584 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Starting GreengovProfileServiceApplication using Java 21.0.8 with PID 26584 (C:\Users\2481294\Documents\workspace-spring-tools-for-eclipse-4.32.0.RELEASE\Proj_GreenGov\Green-Gov_Microservice\greengov-profile-service\target\classes started by 2481294 in C:\Users\2481294\Documents\workspace-spring-tools-for-eclipse-4.32.0.RELEASE\Proj_GreenGov\Green-Gov_Microservice\greengov-profile-service)
+2026-05-14 09:27:00.644 DEBUG 26584 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-05-14 09:27:00.644  INFO 26584 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : No active profile set, falling back to 1 default profile: "default"
+2026-05-14 09:27:00.653  INFO 26584 --- [restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8711
+2026-05-14 09:27:00.653  INFO 26584 --- [restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=greengov-profile-service, profiles=[default], label=null, version=c96fb38e74c79e863c48c242e57fab565c7a54e3, state=
+2026-05-14 09:27:02.010  INFO 26584 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-14 09:27:02.056  INFO 26584 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 39 ms. Found 2 JPA repository interfaces.
+2026-05-14 09:27:02.351  INFO 26584 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=935b8af3-8a5d-3247-8b45-c01f7fd1256b
+2026-05-14 09:27:02.879  INFO 26584 --- [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 9056 (http)
+2026-05-14 09:27:02.882  INFO 26584 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-14 09:27:02.882  INFO 26584 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-05-14 09:27:03.007  INFO 26584 --- [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2351 ms
+2026-05-14 09:27:03.266  INFO 26584 --- [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-14 09:27:03.363  INFO 26584 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-14 09:27:03.367  INFO 26584 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-05-14 09:27:03.479  INFO 26584 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@13a9372d
+2026-05-14 09:27:03.479  INFO 26584 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-05-14 09:27:03.484  WARN 26584 --- [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-14 09:27:03.486  INFO 26584 --- [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/Greengov_Frontend?createDatabaseIfNotExist=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.44
+	Default catalog/schema: Greengov_Frontend/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-14 09:27:03.712  INFO 26584 --- [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-14 09:27:03.810 DEBUG 26584 --- [restartedMain] org.hibernate.SQL                        : alter table documents modify column verification_status enum ('PENDING','REJECTED','VERIFIED') not null
+2026-05-14 09:27:03.931 DEBUG 26584 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles modify column entity_type enum ('BUSINESS_OWNER','CITIZEN') not null
+2026-05-14 09:27:03.966 DEBUG 26584 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles modify column status enum ('PENDING','REJECTED','VERIFIED') not null
+2026-05-14 09:27:04.007  INFO 26584 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-14 09:27:04.607  WARN 26584 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-14 09:27:04.855  INFO 26584 --- [restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'AUTH-SERVICE' URL not provided. Will try picking an instance via load-balancing.
+2026-05-14 09:27:06.509  INFO 26584 --- [restartedMain] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
+2026-05-14 09:27:06.635  WARN 26584 --- [restartedMain] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-05-14 09:27:06.708  INFO 26584 --- [restartedMain] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-05-14 09:27:06.723  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-05-14 09:27:06.723  INFO 26584 --- [restartedMain] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 09:27:06.725  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-14 09:27:06.725  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-14 09:27:06.725  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-14 09:27:06.725  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-14 09:27:06.725  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-14 09:27:06.725  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-05-14 09:27:06.725  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-14 09:27:06.781  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-14 09:27:06.782  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-05-14 09:27:06.782  INFO 26584 --- [restartedMain] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-05-14 09:27:06.783  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1778731026783 with initial instances count: 10
+2026-05-14 09:27:06.801  INFO 26584 --- [restartedMain] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application GREENGOV-PROFILE-SERVICE with eureka with status UP
+2026-05-14 09:27:06.801  INFO 26584 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1778731026801, current=UP, previous=STARTING]
+2026-05-14 09:27:06.802  INFO 26584 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056: registering service...
+2026-05-14 09:27:06.815  INFO 26584 --- [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 9056 (http) with context path '/'
+2026-05-14 09:27:06.817  INFO 26584 --- [restartedMain] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 9056
+2026-05-14 09:27:06.829  INFO 26584 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056 - registration status: 204
+2026-05-14 09:27:06.853  INFO 26584 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Started GreengovProfileServiceApplication in 8.596 seconds (process running for 5555.494)
+2026-05-14 09:27:06.854  WARN 26584 --- [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-05-14 09:27:06.854  WARN 26584 --- [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-05-14 09:27:06.857  INFO 26584 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-05-14 09:31:53.257  WARN 26584 --- [HikariPool-2:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=2m19s643ms336µs800ns).
+2026-05-14 09:33:56.370  INFO 26584 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 09:36:39.999  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2026-05-14 09:36:40.001  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application GREENGOV-PROFILE-SERVICE with eureka with status DOWN
+2026-05-14 09:36:40.001  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1778731600001, current=DOWN, previous=UP]
+2026-05-14 09:36:40.001  INFO 26584 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056: registering service...
+2026-05-14 09:36:40.003  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-14 09:36:40.013  INFO 26584 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056 - registration status: 204
+2026-05-14 09:36:40.040  INFO 26584 --- [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-05-14 09:36:40.054  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-14 09:36:40.056  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-05-14 09:36:40.091  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2026-05-14 09:36:40.093  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-05-14 09:36:43.107  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2026-05-14 09:36:43.148  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on DELETE request for "http://localhost:8761/eureka/apps/GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056": Connect to http://localhost:8761 failed: Connection refused: getsockopt stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on DELETE request for "http://localhost:8761/eureka/apps/GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056": Connect to http://localhost:8761 failed: Connection refused: getsockopt
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.createResourceAccessException(DefaultRestClient.java:776)
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:624)
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchange(DefaultRestClient.java:572)
+	at org.springframework.web.client.RestClient$RequestHeadersSpec.exchange(RestClient.java:747)
+	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.executeAndExtract(DefaultRestClient.java:921)
+	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.toBodilessEntity(DefaultRestClient.java:885)
+	at org.springframework.cloud.netflix.eureka.http.RestClientEurekaHttpClient.cancel(RestClientEurekaHttpClient.java:73)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:91)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.DiscoveryClient.unregister(DiscoveryClient.java:919)
+	at com.netflix.discovery.DiscoveryClient.shutdown(DiscoveryClient.java:900)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMethod.invoke(InitDestroyAnnotationBeanPostProcessor.java:453)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeDestroyMethods(InitDestroyAnnotationBeanPostProcessor.java:411)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeDestruction(InitDestroyAnnotationBeanPostProcessor.java:237)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:200)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.run(DisposableBeanAdapter.java:193)
+	at org.springframework.cloud.context.scope.GenericScope$BeanLifecycleWrapper.destroy(GenericScope.java:387)
+	at org.springframework.cloud.context.scope.GenericScope.destroy(GenericScope.java:134)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:209)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroyBean(DefaultSingletonBeanRegistry.java:795)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingleton(DefaultSingletonBeanRegistry.java:745)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingleton(DefaultListableBeanFactory.java:1500)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingletons(DefaultSingletonBeanRegistry.java:704)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingletons(DefaultListableBeanFactory.java:1493)
+	at org.springframework.context.support.AbstractApplicationContext.destroyBeans(AbstractApplicationContext.java:1246)
+	at org.springframework.context.support.AbstractApplicationContext.doClose(AbstractApplicationContext.java:1207)
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.doClose(ServletWebServerApplicationContext.java:176)
+	at org.springframework.context.support.AbstractApplicationContext.close(AbstractApplicationContext.java:1153)
+	at org.springframework.boot.admin.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin.shutdown(SpringApplicationAdminMXBeanRegistrar.java:151)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at sun.reflect.misc.Trampoline.invoke(MethodUtil.java:64)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/sun.reflect.misc.MethodUtil.invoke(MethodUtil.java:97)
+	at java.management/com.sun.jmx.mbeanserver.ConvertingMethod.invokeWithOpenReturn(ConvertingMethod.java:193)
+	at java.management/com.sun.jmx.mbeanserver.ConvertingMethod.invokeWithOpenReturn(ConvertingMethod.java:175)
+	at java.management/com.sun.jmx.mbeanserver.MXBeanIntrospector.invokeM2(MXBeanIntrospector.java:115)
+	at java.management/com.sun.jmx.mbeanserver.MXBeanIntrospector.invokeM2(MXBeanIntrospector.java:52)
+	at java.management/com.sun.jmx.mbeanserver.MBeanIntrospector.invokeM(MBeanIntrospector.java:236)
+	at java.management/com.sun.jmx.mbeanserver.PerInterface.invoke(PerInterface.java:138)
+	at java.management/com.sun.jmx.mbeanserver.MBeanSupport.invoke(MBeanSupport.java:252)
+	at java.management/com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.invoke(DefaultMBeanServerInterceptor.java:803)
+	at java.management/com.sun.jmx.mbeanserver.JmxMBeanServer.invoke(JmxMBeanServer.java:802)
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl.doOperation(RMIConnectionImpl.java:1472)
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl$PrivilegedOperation.run(RMIConnectionImpl.java:1310)
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl.doPrivilegedOperation(RMIConnectionImpl.java:1405)
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl.invoke(RMIConnectionImpl.java:829)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(UnicastServerRef.java:360)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:200)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:197)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:714)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Transport.java:196)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(TCPTransport.java:598)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(TCPTransport.java:844)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(TCPTransport.java:721)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:720)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 failed: Connection refused: getsockopt
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:226)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:497)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:164)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:174)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:144)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:195)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:168)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:112)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:110)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:185)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:87)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:80)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeWithRequest(AbstractBufferingClientHttpRequest.java:89)
+	at org.springframework.http.client.InterceptingClientHttpRequest$EndOfChainRequestExecution.execute(InterceptingClientHttpRequest.java:102)
+	at org.springframework.cloud.netflix.eureka.http.RestClientTransportClientFactory.lambda$newClient$2(RestClientTransportClientFactory.java:98)
+	at org.springframework.http.client.ClientHttpRequestInterceptor.lambda$apply$0(ClientHttpRequestInterceptor.java:89)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:73)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:50)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:80)
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:614)
+	... 70 more
+
+2026-05-14 09:36:43.148  WARN 26584 --- [RMI TCP Connection(70)-127.0.0.1] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on DELETE request for "http://localhost:8761/eureka/apps/GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056": Connect to http://localhost:8761 failed: Connection refused: getsockopt
+2026-05-14 09:36:43.180  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on DELETE request for "http://localhost:8761/eureka/apps/GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056": Connect to http://localhost:8761 failed: Connection refused: getsockopt stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on DELETE request for "http://localhost:8761/eureka/apps/GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056": Connect to http://localhost:8761 failed: Connection refused: getsockopt
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.createResourceAccessException(DefaultRestClient.java:776)
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:624)
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchange(DefaultRestClient.java:572)
+	at org.springframework.web.client.RestClient$RequestHeadersSpec.exchange(RestClient.java:747)
+	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.executeAndExtract(DefaultRestClient.java:921)
+	at org.springframework.web.client.DefaultRestClient$DefaultResponseSpec.toBodilessEntity(DefaultRestClient.java:885)
+	at org.springframework.cloud.netflix.eureka.http.RestClientEurekaHttpClient.cancel(RestClientEurekaHttpClient.java:73)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:121)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:80)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71)
+	at com.netflix.discovery.DiscoveryClient.unregister(DiscoveryClient.java:919)
+	at com.netflix.discovery.DiscoveryClient.shutdown(DiscoveryClient.java:900)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMethod.invoke(InitDestroyAnnotationBeanPostProcessor.java:453)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeDestroyMethods(InitDestroyAnnotationBeanPostProcessor.java:411)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeDestruction(InitDestroyAnnotationBeanPostProcessor.java:237)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:200)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.run(DisposableBeanAdapter.java:193)
+	at org.springframework.cloud.context.scope.GenericScope$BeanLifecycleWrapper.destroy(GenericScope.java:387)
+	at org.springframework.cloud.context.scope.GenericScope.destroy(GenericScope.java:134)
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:209)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroyBean(DefaultSingletonBeanRegistry.java:795)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingleton(DefaultSingletonBeanRegistry.java:745)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingleton(DefaultListableBeanFactory.java:1500)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingletons(DefaultSingletonBeanRegistry.java:704)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingletons(DefaultListableBeanFactory.java:1493)
+	at org.springframework.context.support.AbstractApplicationContext.destroyBeans(AbstractApplicationContext.java:1246)
+	at org.springframework.context.support.AbstractApplicationContext.doClose(AbstractApplicationContext.java:1207)
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.doClose(ServletWebServerApplicationContext.java:176)
+	at org.springframework.context.support.AbstractApplicationContext.close(AbstractApplicationContext.java:1153)
+	at org.springframework.boot.admin.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin.shutdown(SpringApplicationAdminMXBeanRegistrar.java:151)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at sun.reflect.misc.Trampoline.invoke(MethodUtil.java:64)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/sun.reflect.misc.MethodUtil.invoke(MethodUtil.java:97)
+	at java.management/com.sun.jmx.mbeanserver.ConvertingMethod.invokeWithOpenReturn(ConvertingMethod.java:193)
+	at java.management/com.sun.jmx.mbeanserver.ConvertingMethod.invokeWithOpenReturn(ConvertingMethod.java:175)
+	at java.management/com.sun.jmx.mbeanserver.MXBeanIntrospector.invokeM2(MXBeanIntrospector.java:115)
+	at java.management/com.sun.jmx.mbeanserver.MXBeanIntrospector.invokeM2(MXBeanIntrospector.java:52)
+	at java.management/com.sun.jmx.mbeanserver.MBeanIntrospector.invokeM(MBeanIntrospector.java:236)
+	at java.management/com.sun.jmx.mbeanserver.PerInterface.invoke(PerInterface.java:138)
+	at java.management/com.sun.jmx.mbeanserver.MBeanSupport.invoke(MBeanSupport.java:252)
+	at java.management/com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.invoke(DefaultMBeanServerInterceptor.java:803)
+	at java.management/com.sun.jmx.mbeanserver.JmxMBeanServer.invoke(JmxMBeanServer.java:802)
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl.doOperation(RMIConnectionImpl.java:1472)
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl$PrivilegedOperation.run(RMIConnectionImpl.java:1310)
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl.doPrivilegedOperation(RMIConnectionImpl.java:1405)
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl.invoke(RMIConnectionImpl.java:829)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(UnicastServerRef.java:360)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:200)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:197)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:714)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Transport.java:196)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(TCPTransport.java:598)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(TCPTransport.java:844)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(TCPTransport.java:721)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:720)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 failed: Connection refused: getsockopt
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:226)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:497)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:164)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:174)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:144)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:195)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:168)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:112)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:110)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:185)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:87)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:80)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeWithRequest(AbstractBufferingClientHttpRequest.java:89)
+	at org.springframework.http.client.InterceptingClientHttpRequest$EndOfChainRequestExecution.execute(InterceptingClientHttpRequest.java:102)
+	at org.springframework.cloud.netflix.eureka.http.RestClientTransportClientFactory.lambda$newClient$2(RestClientTransportClientFactory.java:98)
+	at org.springframework.http.client.ClientHttpRequestInterceptor.lambda$apply$0(ClientHttpRequestInterceptor.java:89)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:73)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:50)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:80)
+	at org.springframework.web.client.DefaultRestClient$DefaultRequestBodyUriSpec.exchangeInternal(DefaultRestClient.java:614)
+	... 71 more
+
+2026-05-14 09:36:43.180  WARN 26584 --- [RMI TCP Connection(70)-127.0.0.1] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on DELETE request for "http://localhost:8761/eureka/apps/GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056": Connect to http://localhost:8761 failed: Connection refused: getsockopt
+2026-05-14 09:36:43.180 ERROR 26584 --- [RMI TCP Connection(70)-127.0.0.1] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056 - de-registration failedCannot execute request on any known server
+com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112) ~[eureka-client-2.0.5.jar:2.0.5]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71) ~[eureka-client-2.0.5.jar:2.0.5]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$2.execute(EurekaHttpClientDecorator.java:74) ~[eureka-client-2.0.5.jar:2.0.5]
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76) ~[eureka-client-2.0.5.jar:2.0.5]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.cancel(EurekaHttpClientDecorator.java:71) ~[eureka-client-2.0.5.jar:2.0.5]
+	at com.netflix.discovery.DiscoveryClient.unregister(DiscoveryClient.java:919) ~[eureka-client-2.0.5.jar:2.0.5]
+	at com.netflix.discovery.DiscoveryClient.shutdown(DiscoveryClient.java:900) ~[eureka-client-2.0.5.jar:2.0.5]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMethod.invoke(InitDestroyAnnotationBeanPostProcessor.java:453) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeDestroyMethods(InitDestroyAnnotationBeanPostProcessor.java:411) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeDestruction(InitDestroyAnnotationBeanPostProcessor.java:237) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:200) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.run(DisposableBeanAdapter.java:193) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.cloud.context.scope.GenericScope$BeanLifecycleWrapper.destroy(GenericScope.java:387) ~[spring-cloud-context-5.0.1.jar:5.0.1]
+	at org.springframework.cloud.context.scope.GenericScope.destroy(GenericScope.java:134) ~[spring-cloud-context-5.0.1.jar:5.0.1]
+	at org.springframework.beans.factory.support.DisposableBeanAdapter.destroy(DisposableBeanAdapter.java:209) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroyBean(DefaultSingletonBeanRegistry.java:795) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingleton(DefaultSingletonBeanRegistry.java:745) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingleton(DefaultListableBeanFactory.java:1500) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.destroySingletons(DefaultSingletonBeanRegistry.java:704) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.destroySingletons(DefaultListableBeanFactory.java:1493) ~[spring-beans-7.0.6.jar:7.0.6]
+	at org.springframework.context.support.AbstractApplicationContext.destroyBeans(AbstractApplicationContext.java:1246) ~[spring-context-7.0.6.jar:7.0.6]
+	at org.springframework.context.support.AbstractApplicationContext.doClose(AbstractApplicationContext.java:1207) ~[spring-context-7.0.6.jar:7.0.6]
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.doClose(ServletWebServerApplicationContext.java:176) ~[spring-boot-web-server-4.0.5.jar:4.0.5]
+	at org.springframework.context.support.AbstractApplicationContext.close(AbstractApplicationContext.java:1153) ~[spring-context-7.0.6.jar:7.0.6]
+	at org.springframework.boot.admin.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin.shutdown(SpringApplicationAdminMXBeanRegistrar.java:151) ~[spring-boot-4.0.5.jar:4.0.5]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at sun.reflect.misc.Trampoline.invoke(MethodUtil.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at java.base/sun.reflect.misc.MethodUtil.invoke(MethodUtil.java:97) ~[na:na]
+	at java.management/com.sun.jmx.mbeanserver.ConvertingMethod.invokeWithOpenReturn(ConvertingMethod.java:193) ~[na:na]
+	at java.management/com.sun.jmx.mbeanserver.ConvertingMethod.invokeWithOpenReturn(ConvertingMethod.java:175) ~[na:na]
+	at java.management/com.sun.jmx.mbeanserver.MXBeanIntrospector.invokeM2(MXBeanIntrospector.java:115) ~[na:na]
+	at java.management/com.sun.jmx.mbeanserver.MXBeanIntrospector.invokeM2(MXBeanIntrospector.java:52) ~[na:na]
+	at java.management/com.sun.jmx.mbeanserver.MBeanIntrospector.invokeM(MBeanIntrospector.java:236) ~[na:na]
+	at java.management/com.sun.jmx.mbeanserver.PerInterface.invoke(PerInterface.java:138) ~[na:na]
+	at java.management/com.sun.jmx.mbeanserver.MBeanSupport.invoke(MBeanSupport.java:252) ~[na:na]
+	at java.management/com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.invoke(DefaultMBeanServerInterceptor.java:803) ~[na:na]
+	at java.management/com.sun.jmx.mbeanserver.JmxMBeanServer.invoke(JmxMBeanServer.java:802) ~[na:na]
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl.doOperation(RMIConnectionImpl.java:1472) ~[na:na]
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl$PrivilegedOperation.run(RMIConnectionImpl.java:1310) ~[na:na]
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl.doPrivilegedOperation(RMIConnectionImpl.java:1405) ~[na:na]
+	at java.management.rmi/javax.management.remote.rmi.RMIConnectionImpl.invoke(RMIConnectionImpl.java:829) ~[na:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(UnicastServerRef.java:360) ~[na:na]
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:200) ~[na:na]
+	at java.rmi/sun.rmi.transport.Transport$1.run(Transport.java:197) ~[na:na]
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:714) ~[na:na]
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Transport.java:196) ~[na:na]
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(TCPTransport.java:598) ~[na:na]
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(TCPTransport.java:844) ~[na:na]
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(TCPTransport.java:721) ~[na:na]
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400) ~[na:na]
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(TCPTransport.java:720) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+2026-05-14 09:36:43.211  INFO 26584 --- [RMI TCP Connection(70)-127.0.0.1] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2026-05-14 09:55:31.747  INFO 12100 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Starting GreengovProfileServiceApplication using Java 21.0.8 with PID 12100 (C:\Users\2481294\Documents\workspace-spring-tools-for-eclipse-4.32.0.RELEASE\Proj_GreenGov\Green-Gov_Microservice\greengov-profile-service\target\classes started by 2481294 in C:\Users\2481294\Documents\workspace-spring-tools-for-eclipse-4.32.0.RELEASE\Proj_GreenGov\Green-Gov_Microservice\greengov-profile-service)
+2026-05-14 09:55:31.751 DEBUG 12100 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-05-14 09:55:31.753  INFO 12100 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : No active profile set, falling back to 1 default profile: "default"
+2026-05-14 09:55:31.872  INFO 12100 --- [restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8711
+2026-05-14 09:55:31.873  INFO 12100 --- [restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=greengov-profile-service, profiles=[default], label=null, version=4b66e74f9b22a68e3b48a5c3c1456ee4a75893e4, state=
+2026-05-14 09:55:31.881  INFO 12100 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-05-14 09:55:31.881  INFO 12100 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-05-14 09:55:34.401  INFO 12100 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-14 09:55:34.600  INFO 12100 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 186 ms. Found 2 JPA repository interfaces.
+2026-05-14 09:55:35.235  INFO 12100 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=935b8af3-8a5d-3247-8b45-c01f7fd1256b
+2026-05-14 09:55:36.435  INFO 12100 --- [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 9056 (http)
+2026-05-14 09:55:36.455  INFO 12100 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-14 09:55:36.455  INFO 12100 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-05-14 09:55:36.561  INFO 12100 --- [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 4679 ms
+2026-05-14 09:55:36.901  INFO 12100 --- [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-14 09:55:36.965  INFO 12100 --- [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-05-14 09:55:37.595  INFO 12100 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-14 09:55:37.638  INFO 12100 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-14 09:55:38.534  INFO 12100 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@77170a4d
+2026-05-14 09:55:38.537  INFO 12100 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-14 09:55:38.597  WARN 12100 --- [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-14 09:55:38.632  INFO 12100 --- [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/profile_service?createDatabaseIfNotExist=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.44
+	Default catalog/schema: profile_service/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-14 09:55:40.095  INFO 12100 --- [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-14 09:55:40.160 DEBUG 12100 --- [restartedMain] org.hibernate.SQL                        : create table documents (id bigint not null auto_increment, document_type varchar(50) not null, file_url LONGTEXT not null, uploaded_date datetime(6), verification_status enum ('PENDING','REJECTED','VERIFIED') not null, profile_id bigint not null, primary key (id)) engine=InnoDB
+2026-05-14 09:55:40.206 DEBUG 12100 --- [restartedMain] org.hibernate.SQL                        : create table participant_profiles (id bigint not null auto_increment, address TEXT, contact_info JSON, entity_type enum ('BUSINESS_OWNER','CITIZEN') not null, legal_name varchar(200) not null, status enum ('PENDING','REJECTED','VERIFIED') not null, user_id bigint not null, primary key (id)) engine=InnoDB
+2026-05-14 09:55:40.242 DEBUG 12100 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles drop index UKmvm6lddny48b2vdjs3stcoqol
+2026-05-14 09:55:40.255 DEBUG 12100 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles add constraint UKmvm6lddny48b2vdjs3stcoqol unique (legal_name)
+2026-05-14 09:55:40.276 DEBUG 12100 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles drop index UKnlp23xxe6neswvnr0cwstibfr
+2026-05-14 09:55:40.278 DEBUG 12100 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles add constraint UKnlp23xxe6neswvnr0cwstibfr unique (user_id)
+2026-05-14 09:55:40.299 DEBUG 12100 --- [restartedMain] org.hibernate.SQL                        : alter table documents add constraint FK84o6du7qkffvdo4a5uu92y2lq foreign key (profile_id) references participant_profiles (id)
+2026-05-14 09:55:40.391  INFO 12100 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-14 09:55:40.615  INFO 12100 --- [restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-14 09:55:41.255  WARN 12100 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-14 09:55:41.490  INFO 12100 --- [restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'AUTH-SERVICE' URL not provided. Will try picking an instance via load-balancing.
+2026-05-14 09:55:43.528  INFO 12100 --- [restartedMain] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
+2026-05-14 09:55:43.657  WARN 12100 --- [restartedMain] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-05-14 09:55:43.799  INFO 12100 --- [restartedMain] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-05-14 09:55:43.858  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-05-14 09:55:43.865  INFO 12100 --- [restartedMain] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 09:55:43.882  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-14 09:55:43.882  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-14 09:55:43.882  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-14 09:55:43.883  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-14 09:55:43.883  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-14 09:55:43.883  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-05-14 09:55:43.883  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-14 09:55:44.168  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-14 09:55:44.170  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-05-14 09:55:44.172  INFO 12100 --- [restartedMain] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-05-14 09:55:44.173  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1778732744173 with initial instances count: 4
+2026-05-14 09:55:44.188  INFO 12100 --- [restartedMain] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application GREENGOV-PROFILE-SERVICE with eureka with status UP
+2026-05-14 09:55:44.189  INFO 12100 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1778732744189, current=UP, previous=STARTING]
+2026-05-14 09:55:44.191  INFO 12100 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056: registering service...
+2026-05-14 09:55:44.227  INFO 12100 --- [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 9056 (http) with context path '/'
+2026-05-14 09:55:44.229  INFO 12100 --- [restartedMain] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 9056
+2026-05-14 09:55:44.247  INFO 12100 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056 - registration status: 204
+2026-05-14 09:55:44.252  INFO 12100 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Started GreengovProfileServiceApplication in 14.878 seconds (process running for 16.551)
+2026-05-14 09:55:44.255  WARN 12100 --- [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-05-14 09:55:44.255  WARN 12100 --- [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-05-14 10:00:43.896  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 10:18:47.329  WARN 12100 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m8s591ms23µs301ns).
+2026-05-14 11:03:23.515  WARN 12100 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=44m36s186ms210µs600ns).
+2026-05-14 11:05:59.139  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 11:10:59.153  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 11:15:18.487  WARN 12100 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m24s828ms317µs601ns).
+2026-05-14 11:17:54.547  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 11:46:44.243  WARN 12100 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=25m25s646ms237µs).
+2026-05-14 11:47:50.189  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 11:52:50.199  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 12:06:54.669  WARN 12100 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=12m10s279ms238µs999ns).
+2026-05-14 12:09:39.378  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 12:37:24.285  WARN 12100 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=27m29s569ms466µs100ns).
+2026-05-14 13:56:59.692  WARN 12100 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h16m35s354ms177µs400ns).
+2026-05-14 13:58:06.149  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 14:03:06.162  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 14:08:06.173  INFO 12100 --- [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 18:10:12.629  INFO 20928 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Starting GreengovProfileServiceApplication using Java 21.0.8 with PID 20928 (C:\Users\2481294\Documents\workspace-spring-tools-for-eclipse-4.32.0.RELEASE\Proj_GreenGov\Green-Gov_Microservice\greengov-profile-service\target\classes started by 2481294 in C:\Users\2481294\Documents\workspace-spring-tools-for-eclipse-4.32.0.RELEASE\Proj_GreenGov\Green-Gov_Microservice\greengov-profile-service)
+2026-05-14 18:10:12.686 DEBUG 20928 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-05-14 18:10:12.702  INFO 20928 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : No active profile set, falling back to 1 default profile: "default"
+2026-05-14 18:10:13.770  INFO 20928 --- [restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8711
+2026-05-14 18:10:13.771  INFO 20928 --- [restartedMain] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=greengov-profile-service, profiles=[default], label=null, version=4b66e74f9b22a68e3b48a5c3c1456ee4a75893e4, state=
+2026-05-14 18:10:13.794  INFO 20928 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-05-14 18:10:13.797  INFO 20928 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-05-14 18:10:33.408  INFO 20928 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-14 18:10:35.374  INFO 20928 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 1880 ms. Found 2 JPA repository interfaces.
+2026-05-14 18:10:38.809  INFO 20928 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=935b8af3-8a5d-3247-8b45-c01f7fd1256b
+2026-05-14 18:10:47.488  INFO 20928 --- [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 9056 (http)
+2026-05-14 18:10:47.565  INFO 20928 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-14 18:10:47.567  INFO 20928 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-05-14 18:10:48.111  INFO 20928 --- [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 34299 ms
+2026-05-14 18:10:59.472  INFO 20928 --- [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-14 18:11:00.324  INFO 20928 --- [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-05-14 18:11:11.269  INFO 20928 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-14 18:11:11.692  INFO 20928 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-14 18:11:31.683  INFO 20928 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7f9e3ef0
+2026-05-14 18:11:31.699  INFO 20928 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-14 18:11:32.082  WARN 20928 --- [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-14 18:11:32.241  INFO 20928 --- [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/profile_service?createDatabaseIfNotExist=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.44
+	Default catalog/schema: profile_service/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-14 18:11:35.912  INFO 20928 --- [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-14 18:11:36.056 DEBUG 20928 --- [restartedMain] org.hibernate.SQL                        : alter table documents modify column verification_status enum ('PENDING','REJECTED','VERIFIED') not null
+2026-05-14 18:11:36.111 DEBUG 20928 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles modify column entity_type enum ('BUSINESS_OWNER','CITIZEN') not null
+2026-05-14 18:11:36.180 DEBUG 20928 --- [restartedMain] org.hibernate.SQL                        : alter table participant_profiles modify column status enum ('PENDING','REJECTED','VERIFIED') not null
+2026-05-14 18:11:36.243  INFO 20928 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-14 18:11:36.940  INFO 20928 --- [restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-14 18:11:38.227  WARN 20928 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-14 18:11:38.752  INFO 20928 --- [restartedMain] o.s.c.openfeign.FeignClientFactoryBean   : For 'AUTH-SERVICE' URL not provided. Will try picking an instance via load-balancing.
+2026-05-14 18:11:43.218  INFO 20928 --- [restartedMain] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
+2026-05-14 18:11:43.497  WARN 20928 --- [restartedMain] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-05-14 18:11:43.746  INFO 20928 --- [restartedMain] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-05-14 18:11:43.837  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-05-14 18:11:43.845  INFO 20928 --- [restartedMain] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-14 18:11:43.866  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-14 18:11:43.867  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-14 18:11:43.875  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-14 18:11:43.875  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-14 18:11:43.876  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-14 18:11:43.879  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-05-14 18:11:43.880  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-14 18:11:44.544  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-14 18:11:44.550  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-05-14 18:11:44.553  INFO 20928 --- [restartedMain] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-05-14 18:11:44.554  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1778762504554 with initial instances count: 4
+2026-05-14 18:11:44.584  INFO 20928 --- [restartedMain] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application GREENGOV-PROFILE-SERVICE with eureka with status UP
+2026-05-14 18:11:44.585  INFO 20928 --- [restartedMain] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1778762504585, current=UP, previous=STARTING]
+2026-05-14 18:11:44.589  INFO 20928 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056: registering service...
+2026-05-14 18:11:44.644  INFO 20928 --- [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 9056 (http) with context path '/'
+2026-05-14 18:11:44.645  INFO 20928 --- [restartedMain] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 9056
+2026-05-14 18:11:44.756  INFO 20928 --- [restartedMain] .c.g.p.GreengovProfileServiceApplication : Started GreengovProfileServiceApplication in 110.511 seconds (process running for 112.435)
+2026-05-14 18:11:44.807  WARN 20928 --- [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-05-14 18:11:44.809  WARN 20928 --- [restartedMain] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-05-14 18:11:44.906  INFO 20928 --- [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_GREENGOV-PROFILE-SERVICE/LTIN717961.cts.com:greengov-profile-service:9056 - registration status: 204

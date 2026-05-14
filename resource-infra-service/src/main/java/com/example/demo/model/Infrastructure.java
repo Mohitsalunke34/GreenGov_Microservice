@@ -1,5 +1,4 @@
 package com.example.demo.model;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,21 +18,24 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Infrastructure {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long infraId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long infraId;
 
-	@Column(name = "project_id", nullable = false)
-	private long projectId;
+    @Column(name = "project_id", nullable = false)
+    private long projectId;
 
-	@Column(nullable = false)
-	private String type;
+    // Add this field to store the enriched data
+    private String projectTitle; 
 
-	@Column(nullable = false)
-	private String location;
+    @Column(nullable = false)
+    private String type;
 
-	@Column(nullable = false)
-	private int capacity;
+    @Column(nullable = false)
+    private String location;
 
-	private String status;
+    @Column(nullable = false)
+    private int capacity;
+
+    private String status;
 }

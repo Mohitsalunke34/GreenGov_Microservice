@@ -1,5 +1,7 @@
 package com.example.demo.security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -8,59 +10,112 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	private final JwtAuthenticationFilter jwtFilter;
+    private final JwtAuthenticationFilter jwtFilter;
 
-	public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
-		this.jwtFilter = jwtFilter;
-	}
+    public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
 
-	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-		http.csrf(csrf -> csrf.disable())
-				.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        http
+            // ✅ ENABLE CORS (Spring Security 6 way)// to take request from react
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-				.authorizeHttpRequests(auth -> auth
+            // ✅ DISABLE CSRF (JWT based auth)
+            .csrf(csrf -> csrf.disable())
 
-						// ✅ PUBLIC ENDPOINTS
-						.requestMatchers("/actuator/**").permitAll().requestMatchers("/api/auth/**").permitAll()
-						.requestMatchers("/api/admin/auth/login").permitAll()
+            // ✅ STATELESS SESSION
+            .sessionManagement(sm ->
+                sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
 
-						// ✅ PROGRAMS
-						.requestMatchers(HttpMethod.GET, "/api/programs/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "/api/programs/**").hasAuthority("PROGRAM_MANAGER")
+            // ✅ AUTHORIZATION RULES
+            .authorizeHttpRequests(auth -> auth
 
-						// ✅ PROJECTS
-						.requestMatchers(HttpMethod.POST, "/api/projects/**").hasAnyRole("CITIZEN", "BUSINESS_OWNER")
-						.requestMatchers(HttpMethod.PATCH, "/api/projects/**").hasAuthority("PROGRAM_MANAGER")
+                // ✅ PUBLIC
+                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/admin/auth/login").permitAll()
 
-						// ✅ INFRASTRUCTURE
-						.requestMatchers(HttpMethod.POST, "/api/infrastructure/**").hasAuthority("PROGRAM_MANAGER")
-						.requestMatchers(HttpMethod.PATCH, "/api/infrastructure/**").hasAuthority("PROGRAM_MANAGER")
-						.requestMatchers(HttpMethod.DELETE, "/api/infrastructure/**").hasAuthority("PROGRAM_MANAGER")
-						.requestMatchers(HttpMethod.GET, "/api/infrastructure/**").authenticated()
+                // ✅ PROGRAMS
+                .requestMatchers(HttpMethod.GET, "/api/programs/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/programs/**")
+                .hasAuthority("PROGRAM_MANAGER")
 
-						// ✅ COMPLIANCE
-						.requestMatchers(HttpMethod.POST, "/api/compliance/**").hasAuthority("COMPLIANCE_OFFICER")
+                // ✅ PROJECTS
+                .requestMatchers(HttpMethod.POST, "/api/projects/**")
+                .hasAnyRole("CITIZEN", "BUSINESS_OWNER")
+                .requestMatchers(HttpMethod.PATCH, "/api/projects/**")
+                .hasAuthority("PROGRAM_MANAGER")
 
-						// ✅ AUDIT
-						.requestMatchers("/api/audits/**").hasAuthority("AUDIT_MANAGER")
+                // ✅ INFRASTRUCTURE
+                .requestMatchers(HttpMethod.POST, "/api/infrastructure/**")
+                .hasAuthority("PROGRAM_MANAGER")
+                .requestMatchers(HttpMethod.PATCH, "/api/infrastructure/**")
+                .hasAuthority("PROGRAM_MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/api/infrastructure/**")
+                .hasAuthority("PROGRAM_MANAGER")
+                .requestMatchers(HttpMethod.GET, "/api/infrastructure/**")
+                .authenticated()
 
-						// ✅ INCENTIVE
-						.requestMatchers(HttpMethod.POST, "/api/incentives/**").hasAuthority("DISBURSEMENT_OFFICER")
+                // ✅ COMPLIANCE
+                .requestMatchers(HttpMethod.POST, "/api/compliance/**")
+                .hasAuthority("COMPLIANCE_OFFICER")
 
-						.requestMatchers(HttpMethod.POST, "/api/reports/**").permitAll()
-						.requestMatchers(HttpMethod.GET, "/api/reports/**").permitAll()
-						// ✅ EVERYTHING ELSE
-						.anyRequest().authenticated())
+                // ✅ AUDIT
+                .requestMatchers("/api/audits/**")
+                .hasAuthority("AUDIT_MANAGER")
 
-				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                // ✅ INCENTIVE
+                .requestMatchers(HttpMethod.POST, "/api/incentives/**")
+                .hasAuthority("DISBURSEMENT_OFFICER")
 
-		return http.build();
-	}
+                // ✅ REPORTS
+                .requestMatchers(HttpMethod.POST, "/api/reports/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/reports/**").permitAll()
+
+                // ✅ EVERYTHING ELSE
+                .anyRequest().authenticated()
+            )
+
+            // ✅ JWT FILTER
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    // ✅ CORS CONFIGURATION SOURCE (USED BY SECURITY)
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(
+            List.of("http://localhost:3000")
+        );
+
+        configuration.setAllowedMethods(
+            List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+        );
+
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+            new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
 }

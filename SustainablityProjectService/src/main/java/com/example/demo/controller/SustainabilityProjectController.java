@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.SustainabilityProjectRequestDto;
 import com.example.demo.dto.SustainabilityProjectResponseDto;
+import com.example.demo.dto.client_dto.SubjectLookupDTO;
 import com.example.demo.exception.ProjectNotFound;
 import com.example.demo.repository.SustainabilityProjectRepo;
 import com.example.demo.service.SustainabilityProjectService;
@@ -97,6 +98,14 @@ public class SustainabilityProjectController {
 	@GetMapping("/{id}/exists")
 	public ResponseEntity<Boolean> projectExists(@PathVariable Long id) {
 		return ResponseEntity.ok(projectService.projectExists(id));
+	}
+	
+	//Used by complience client to get a list of Projects
+	@GetMapping("/subjects")
+	public ResponseEntity<List<SubjectLookupDTO>> getProjectSubjects() {
+
+		return ResponseEntity.ok(
+				projectRepo.findAll().stream().map(p -> new SubjectLookupDTO(p.getProjectId(), p.getTitle())).toList());
 	}
 
 	@GetMapping("/report-metrics")
