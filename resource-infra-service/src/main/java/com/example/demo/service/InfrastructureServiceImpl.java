@@ -34,22 +34,32 @@ public class InfrastructureServiceImpl implements InfrastructureService {
 
 	private final InfrastructureRepository infraRepository;
 	private final ProjectClient projectClient;
-	private final NotificationClient notificationClient; 
+	private final NotificationClient notificationClient;
+	private static final List<String> ALLOWED_INFRA_TYPES = Arrays.asList("SolarPlant", "WindFarm", "RecyclingUnit");
 
 	@Override
 	public InfrastructureResponseDTO addInfrastructure(InfrastructureCreateRequestDTO dto) {
 		logger.info("Adding new infrastructure for Project ID: {}", dto.getProjectId());
 
-		ProjectResponseDTO project = fetchProject(dto.getProjectId());
+		// 1. Validate Type
+		if (!ALLOWED_INFRA_TYPES.contains(dto.getType())) {
+			logger.error("Invalid infrastructure type: {}", dto.getType());
+			throw new ValidationException("Invalid Type. Allowed: " + ALLOWED_INFRA_TYPES);
+		}
 
-		Infrastructure infra = Infrastructure.builder().projectId(dto.getProjectId()).type(dto.getType())
-				.location(dto.getLocation()).capacity(dto.getCapacity()).status("Planned").build();
+		// 2. Fetch project and check Approval Status
+		ProjectResponseDTO project = fetchProject(dto.getProjectId());
+		if (!"Approved".equalsIgnoreCase(project.getStatus())) {
+			throw new ValidationException("Infrastructure can only be added to 'Approved' projects.");
+		}
+
+		// 3. Build and Save
+		Infrastructure infra = Infrastructure.builder().projectId(dto.getProjectId()).projectTitle(project.getTitle())
+				.type(dto.getType()).location(dto.getLocation()).capacity(dto.getCapacity()).status("Planned").build();
 
 		Infrastructure saved = infraRepository.save(infra);
 
-		// Trigger Notification
-		sendInternalNotification(
-				"New " + dto.getType() + " infrastructure planned for Project ID: " + dto.getProjectId(),
+		sendInternalNotification("New " + dto.getType() + " infrastructure planned for Project: " + project.getTitle(),
 				"INFRASTRUCTURE", saved.getInfraId());
 
 		return mapToResponseDTO(saved);
@@ -60,17 +70,22 @@ public class InfrastructureServiceImpl implements InfrastructureService {
 		Infrastructure existing = infraRepository.findById(infraId)
 				.orElseThrow(() -> new ResourceNotFoundException("Infrastructure not found with ID: " + infraId));
 
-		fetchProject(dto.getProjectId());
+		ProjectResponseDTO project = fetchProject(dto.getProjectId());
+		if (!ALLOWED_INFRA_TYPES.contains(dto.getType())) {
+			logger.error("Invalid infrastructure type: {}", dto.getType());
+			throw new ValidationException("Invalid Type. Allowed: " + ALLOWED_INFRA_TYPES);
+		}
 
 		existing.setProjectId(dto.getProjectId());
+		existing.setProjectTitle(project.getTitle());
+
 		existing.setType(dto.getType());
 		existing.setLocation(dto.getLocation());
 		existing.setCapacity(dto.getCapacity());
 
 		Infrastructure saved = infraRepository.save(existing);
-
-		
-		sendInternalNotification("Infrastructure ID " + infraId + " details updated.", "INFRASTRUCTURE", infraId);
+		sendInternalNotification("Infrastructure ID " + infraId + " details updated for Project: " + project.getTitle(),
+				"INFRASTRUCTURE", infraId);
 
 		return mapToResponseDTO(saved);
 	}
@@ -108,27 +123,17 @@ public class InfrastructureServiceImpl implements InfrastructureService {
 
 		infraRepository.deleteById(infraId);
 
-		
 		sendInternalNotification("Infrastructure ID " + infraId + " has been removed from the system.",
 				"INFRASTRUCTURE", infraId);
 
 		logger.info("Infrastructure ID {} successfully purged.", infraId);
 	}
 
-	
 	private void sendInternalNotification(String message, String category, Long entityId) {
-		try {
-			NotificationRequestDTO notifyReq = NotificationRequestDTO.builder().userId(1L) // Testing ID
-					.message(message).category(category).entityId(entityId).sendEmail(false) // Keeping email off per
-																								// requirements
-					.email("admin@greengov.com").build();
-
-			notificationClient.createNotification(notifyReq);
-			logger.info("Infrastructure notification triggered: {}", category);
-		} catch (Exception e) {
-			// Fail-safe: Don't break the main business logic if notifications fail
-			logger.error("Infrastructure notification failed: {}", e.getMessage());
-		}
+		NotificationRequestDTO notifyReq = NotificationRequestDTO.builder().userId(1L).message(message)
+				.category(category).entityId(entityId).sendEmail(false).email("system@greengov.com").build();
+		notificationClient.createNotification(notifyReq);
+		logger.info("Notification request processed (either sent or handled by fallback).");
 	}
 
 	/* ================= READ METHODS ================= */
@@ -147,22 +152,21 @@ public class InfrastructureServiceImpl implements InfrastructureService {
 	}
 
 	private ProjectResponseDTO fetchProject(long projectId) {
-		try {
-			ResponseEntity<ProjectResponseDTO> response = projectClient.getProjectById(projectId);
-			if (response.getBody() == null) {
-				throw new ResourceNotFoundException("Project not found with ID: " + projectId);
-			}
-			return response.getBody();
-		} catch (Exception e) {
-			logger.error("Error communicating with Project Service: {}", e.getMessage());
-			throw new RuntimeException("Project verification failed for ID: " + projectId);
+		ResponseEntity<ProjectResponseDTO> response = projectClient.getProjectById(projectId);
+		ProjectResponseDTO project = response.getBody();
+
+		if (project == null || "SERVICE_FAILURE".equals(project.getStatus())) {
+			throw new ResourceNotFoundException("Project Service is currently unavailable. Please try again later.");
 		}
+
+		return project;
 	}
 
 	private InfrastructureResponseDTO mapToResponseDTO(Infrastructure entity) {
 		InfrastructureResponseDTO response = new InfrastructureResponseDTO();
 		response.setInfraId(entity.getInfraId());
 		response.setProjectId(entity.getProjectId());
+		response.setProjectTitle(entity.getProjectTitle());
 		response.setType(entity.getType());
 		response.setLocation(entity.getLocation());
 		response.setCapacity(entity.getCapacity());

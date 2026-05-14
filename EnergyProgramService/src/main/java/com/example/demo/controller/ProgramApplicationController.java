@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ProgramApplicationRequestDto;
 import com.example.demo.dto.ProgramApplicationResponseDto;
+import com.example.demo.dto.client_dto.ApprovedApplicationLookupDTO;
 import com.example.demo.service.ProgramApplicationService;
 
 import jakarta.validation.Valid;
@@ -73,4 +74,12 @@ public class ProgramApplicationController {
 		log.info("REST request to REJECT application ID {}", applicationId);
 		return ResponseEntity.ok(service.rejectApplication(applicationId));
 	}
+
+	@GetMapping("/approved/by-participant/{participantId}")
+	public ResponseEntity<List<ApprovedApplicationLookupDTO>> getApprovedApplicationsByParticipant(
+			@PathVariable Long participantId) {
+
+		return ResponseEntity.ok(service.getApprovedApplicationsByParticipant(participantId));
+	}
+
 }

@@ -19,5 +19,7 @@ public class ProgramApplicationResponseDto {
 
 	private LocalDate submittedDate;
 
+	private String programTitle;
+
 	private String status;
 }

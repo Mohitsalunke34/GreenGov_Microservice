@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.client.ParticipantClient;
 import com.example.demo.dto.IncentiveCreateRequestDTO;
 import com.example.demo.dto.IncentiveResponseDTO;
+import com.example.demo.dto.ParticipantBasicDTO;
+import com.example.demo.dto.client_dto.SubjectLookupDTO;
 import com.example.demo.repo.IncentiveRepository;
 import com.example.demo.service.IncentiveService;
 
@@ -24,12 +27,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Incentive Controller (MICROSERVICE) Handles incentive creation, retrieval and
- * deletion.
- *
- * NOTE: - No entity access - No budget logic - No program/application logic
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/incentives")
@@ -38,118 +35,91 @@ public class IncentiveController {
 
 	private final IncentiveService incentiveService;
 	private final IncentiveRepository incentiveRepo;
+	private final ParticipantClient participantClient;
 
-	/**
-	 * CREATE INCENTIVE Officer ID comes from API Gateway / Auth service
-	 */
+	/* ================= CREATE ================= */
+
 	@PostMapping("/create")
 	public ResponseEntity<IncentiveResponseDTO> createIncentive(@RequestHeader("X-Officer-User-Id") Long officerUserId,
 			@RequestBody @Valid IncentiveCreateRequestDTO dto) {
 
-		log.info("Microservice request → Create Incentive | ApplicationId={} | OfficerId={}", dto.getApplicationId(),
-				officerUserId);
+		log.info("Create Incentive | ParticipantId={} | OfficerId={}", dto.getParticipantId(), officerUserId);
 
 		IncentiveResponseDTO response = incentiveService.createIncentive(dto, officerUserId);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	/**
-	 * FETCH INCENTIVE BY APPLICATION ID One application → one incentive
-	 */
-	@GetMapping("/application/{applicationId}")
-	public ResponseEntity<IncentiveResponseDTO> getByApplication(@PathVariable Long applicationId) {
+	/* ================= READ ================= */
 
-		return ResponseEntity.ok(incentiveService.getByApplication(applicationId));
-	}
-
-	/**
-	 * FETCH ALL INCENTIVES FOR A BENEFICIARY
-	 */
 	@GetMapping("/beneficiary/{beneficiaryId}")
 	public ResponseEntity<List<IncentiveResponseDTO>> getByBeneficiary(@PathVariable Long beneficiaryId) {
 
 		return ResponseEntity.ok(incentiveService.getByBeneficiary(beneficiaryId));
 	}
 
-	/**
-	 * FETCH INCENTIVE BY ID
-	 */
 	@GetMapping("/fetchById/{incentiveId}")
 	public ResponseEntity<IncentiveResponseDTO> getByIncentiveId(@PathVariable Long incentiveId) {
 
 		return ResponseEntity.ok(incentiveService.getByIncentiveId(incentiveId));
 	}
 
-	/**
-	 * FETCH ALL INCENTIVES (ADMIN / AUDIT)
-	 */
 	@GetMapping("/fetchAllIncentives")
 	public ResponseEntity<List<IncentiveResponseDTO>> getAllIncentives() {
 
 		return ResponseEntity.ok(incentiveService.getAllIncentives());
 	}
 
-	/**
-	 * DELETE INCENTIVE IMPORTANT: - Does NOT refund budget (business decision)
-	 */
+	/* ================= DELETE ================= */
+
 	@DeleteMapping("/deleteById/{incentiveId}")
 	public ResponseEntity<IncentiveResponseDTO> deleteIncentive(@PathVariable Long incentiveId) {
-
-		log.warn("Microservice request → Delete Incentive | IncentiveId={}", incentiveId);
 
 		IncentiveResponseDTO deleted = incentiveService.deleteIncentive(incentiveId);
 
 		return ResponseEntity.ok(deleted);
 	}
 
-	/**
-	 * EXISTS CHECK Used by Compliance microservice via Feign
-	 */
+	/* ================= INTERNAL ================= */
+
 	@GetMapping("/{id}/exists")
 	public ResponseEntity<Boolean> incentiveExists(@PathVariable Long id) {
-
 		return ResponseEntity.ok(incentiveService.incentiveExists(id));
 	}
 
-	/**
-	 * 
-	 * Reporting & Analytics endpoint Used by Reports microservice
-	 * 
-	 */
-
 	@GetMapping("/report-metrics")
-
 	public Map<String, Object> getIncentiveReportMetrics() {
 
 		Long totalIncentives = incentiveRepo.count();
+		Long approvedIncentives = incentiveRepo
+				.countByStatusIn(List.of("APPROVED", "PARTIALLY_DISBURSED", "COMPLETED"));
 
-		Long approvedIncentives =
-
-				incentiveRepo.countByStatusIn(
-
-						List.of("APPROVED", "PARTIALLY_DISBURSED", "COMPLETED"));
-
-		Double totalAmount =
-
-				incentiveRepo.sumTotalAmount();
-
-		Double disbursedAmount =
-
-				incentiveRepo.sumDisbursedAmount();
+		Double totalAmount = incentiveRepo.sumTotalAmount();
+		Double disbursedAmount = incentiveRepo.sumDisbursedAmount();
 
 		Map<String, Object> response = new HashMap<>();
-
 		response.put("totalIncentives", totalIncentives.intValue());
-
 		response.put("approvedIncentives", approvedIncentives.intValue());
-
 		response.put("totalAmount", totalAmount);
-
 		response.put("disbursedAmount", disbursedAmount);
 
 		return response;
-
 	}
 
+	// Used by Compliance Service
+	@GetMapping("/subjects")
+	public ResponseEntity<List<SubjectLookupDTO>> getIncentiveSubjects() {
+
+		return ResponseEntity.ok(incentiveRepo.findAll().stream()
+				.map(i -> new SubjectLookupDTO(i.getIncentiveId(), "Incentive #" + i.getIncentiveId())).toList());
+	}
+	
+	/**
+	 * PARTICIPANT LOOKUP
+	 * Used by Incentive UI to select participant by legal name
+	 */
+	@GetMapping("/participants/lookup")
+	public ResponseEntity<List<ParticipantBasicDTO>> getParticipantsLookup() {
+	    return ResponseEntity.ok(participantClient.getParticipants());
+	}
 }

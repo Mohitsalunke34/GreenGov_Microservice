@@ -45,10 +45,6 @@ public class ComplianceRecord extends CreatedUpdatedLogs {
 	@Column(name = "subject_id", nullable = false)
 	private Long subjectId;
 
-	// Participant ID (from Profile service)
-	@NotNull
-	@Column(name = "participant_id", nullable = false)
-	private Long participantId;
 
 	// Compliance result
 	@NotNull

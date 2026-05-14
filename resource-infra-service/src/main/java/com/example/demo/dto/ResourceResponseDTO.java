@@ -10,6 +10,8 @@ public class ResourceResponseDTO {
 
     private String type;
     private Double quantity;
-
+    private String projectTitle;
     private String status;
+
+	
 }

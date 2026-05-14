@@ -11,7 +11,6 @@ public final class ComplianceMapper {
 		dto.setId(record.getId());
 		dto.setSubjectType(record.getSubjectType().name());
 		dto.setSubjectId(record.getSubjectId());
-		dto.setParticipantId(record.getParticipantId());
 		dto.setResult(record.getResult().name());
 		dto.setAuditStatus(record.getAuditStatus().name());
 		dto.setNotes(record.getNotes());

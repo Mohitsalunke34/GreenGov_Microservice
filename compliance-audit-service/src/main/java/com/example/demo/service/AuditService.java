@@ -17,4 +17,6 @@ public interface AuditService {
 	List<AuditResponseDTO> getByStatus(AuditStatus status);
 
 	AuditResponseDTO closeAudit(Long auditId, AuditStatus finalStatus, Long auditorUserId);
+
+	List<AuditResponseDTO> getAllAudit();
 }

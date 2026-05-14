@@ -13,18 +13,23 @@ import com.cognizant.greengov.profile.dto.clients.ParticipantBasicDTO;
 public interface ParticipantService {
 	EntityProfileResponseDto registerParticipant(ParticipantRegistrationRequestDto request);
 
-	EntityProfileResponseDto getParticipantDetails(Long id);
+	EntityProfileResponseDto getParticipantDetails(Long participantId);
 
-	EntityProfileResponseDto updateParticipantDetails(Long id, ParticipantUpdateRequestDto request);
+	EntityProfileResponseDto getParticipantByUserId(Long userId);
 
-	DocumentResponseDto uploadDocument(Long profileId, DocumentUploadRequestDto request);
+	EntityProfileResponseDto updateParticipantDetails(Long participantId, ParticipantUpdateRequestDto request);
 
-	List<DocumentResponseDto> getParticipantDocuments(Long profileId);
+	DocumentResponseDto uploadDocument(Long participantId, DocumentUploadRequestDto request);
 
-	void updateParticipantStatus(Long profileId, VerificationStatusUpdateDto statusDto);
+	List<DocumentResponseDto> getParticipantDocuments(Long participantId);
+
+	void updateParticipantStatus(Long participantId, VerificationStatusUpdateDto statusDto);
 
 	void updateDocumentStatus(Long documentId, VerificationStatusUpdateDto statusDto);
 
-	// for Compliance microservice client
 	ParticipantBasicDTO getParticipantBasic(Long participantId);
+
+	List<ParticipantBasicDTO> getAllParticipantBasics();
+
+	List<EntityProfileResponseDto> getAllParticipants();
 }

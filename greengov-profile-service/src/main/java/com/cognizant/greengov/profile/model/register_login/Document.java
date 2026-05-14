@@ -1,5 +1,7 @@
 package com.cognizant.greengov.profile.model.register_login;
 
+import java.time.LocalDateTime;
+
 import com.cognizant.greengov.profile.model.VerificationStatus;
 
 import jakarta.persistence.Column;
@@ -14,10 +16,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "documents")
@@ -25,24 +27,27 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String documentType;
-
-    @Column(nullable = false, length = 500)
-    private String fileUrl;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 30)
-    private VerificationStatus verificationStatus;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", nullable = false)
     private ParticipantProfile profile;
+
+    @Column(name = "document_type", nullable = false, length = 50)
+    private String documentType;
+
+    @Column(name = "file_url", nullable = false, columnDefinition = "LONGTEXT")
+    private String fileUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "verification_status", nullable = false, length = 20)
+    private VerificationStatus verificationStatus;
+
+    @CreationTimestamp
+    @Column(name = "uploaded_date", updatable = false)
+    private LocalDateTime uploadedDate;
 }

@@ -15,4 +15,7 @@ public interface ProgramApplicationRepository extends JpaRepository<ProgramAppli
 	List<ProgramApplication> findByProgram(EnergyProgram program);
 
 	Optional<ProgramApplication> findByApplicantIdAndProgram(Long applicantId, EnergyProgram program);
+
+	List<ProgramApplication> findByApplicantIdAndStatus(Long applicantId, String status);
+
 }

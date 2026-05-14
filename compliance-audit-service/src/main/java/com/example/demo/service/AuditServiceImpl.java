@@ -55,8 +55,6 @@ public class AuditServiceImpl implements AuditService {
 
 		Audit saved = auditRepo.save(audit);
 
-		notifyAudit("Audit started for Compliance ID " + dto.getComplianceId(), "AUDIT", saved.getId());
-
 		return AuditMapper.toDTO(saved);
 	}
 
@@ -82,8 +80,6 @@ public class AuditServiceImpl implements AuditService {
 
 		Audit saved = auditRepo.save(audit);
 
-		notifyAudit("Audit " + finalStatus + " for Compliance ID " + audit.getComplianceId(), "AUDIT", saved.getId());
-
 		return AuditMapper.toDTO(saved);
 	}
 
@@ -94,7 +90,12 @@ public class AuditServiceImpl implements AuditService {
 
 	@Override
 	public List<AuditResponseDTO> getByCompliance(Long complianceId) {
-		return auditRepo.findByComplianceId(complianceId).stream().map(AuditMapper::toDTO).toList();
+		return auditRepo.findByComplianceId(complianceId).stream().map((audit)->AuditMapper.toDTO(audit)).toList();
+	}
+
+	@Override
+	public List<AuditResponseDTO> getAllAudit() {
+		return auditRepo.findAll().stream().map(AuditMapper::toDTO).toList();
 	}
 
 	@Override
@@ -114,21 +115,5 @@ public class AuditServiceImpl implements AuditService {
 		log.error("Auth Service unavailable auditor Id {}", userId);
 		throw new ServiceUnavailableException("Auth Service unavailable");
 	}
-	// Fallback method for notification service
 
-	private void notificationFallback(String message, String category, Long entityId, Throwable ex) {
-
-		log.warn("Audit notification skipped (service down) | auditId={}", entityId, ex);
-	}
-
-	@CircuitBreaker(name = "notificationService", fallbackMethod = "notificationFallback")
-	@Retry(name = "notificationService")
-	private void notifyAudit(String message, String category, Long entityId) {
-
-		NotificationRequestDTO request = NotificationRequestDTO.builder().userId(1L).message(message).category(category)
-				.entityId(entityId).sendEmail(false).email("admin@greengov.com").build();
-
-		notificationClient.createNotification(request);
-		log.info("Audit notification sent | entityId={}", entityId);
-	}
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.EnergyProgramRequestDto;
 import com.example.demo.dto.EnergyProgramResponseDto;
+import com.example.demo.dto.client_dto.SubjectLookupDTO;
 import com.example.demo.exception.ProjectNotFound;
 import com.example.demo.repository.EnergyProgramRepository;
 import com.example.demo.service.EnergyProgramService;
@@ -102,6 +103,13 @@ public class EnergyProgramController {
 		return ResponseEntity.ok(service.programExists(id));
 	}
 
+	@GetMapping("/fetchByTitle/{title}")
+	public ResponseEntity<EnergyProgramResponseDto> getProgramByTitle(@PathVariable String title)
+			throws ProjectNotFound {
+		log.info("REST request to fetch program by title: {}", title);
+		return ResponseEntity.ok(service.getProgramByTitle(title));
+	}
+
 	@GetMapping("/report-metrics")
 	public Map<String, Object> getProgramReportMetrics() {
 
@@ -121,4 +129,14 @@ public class EnergyProgramController {
 		return response;
 
 	}
+
+	// This get mapping is used by Compliance to get the list of Programs
+	@GetMapping("/subjects")
+	public ResponseEntity<List<SubjectLookupDTO>> getProgramSubjects() {
+		List<SubjectLookupDTO> subjects = programRepo.findAll().stream()
+				.map(p -> new SubjectLookupDTO(p.getProgramId(), p.getTitle())).toList();
+
+		return ResponseEntity.ok(subjects);
+	}
+
 }

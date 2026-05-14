@@ -9,7 +9,7 @@ public class InfrastructureResponseDTO {
 
 	// Mapping reference
 	private Long projectId;
-
+	private String projectTitle;
 	// Infrastructure details
 	private String type;
 	private String location;

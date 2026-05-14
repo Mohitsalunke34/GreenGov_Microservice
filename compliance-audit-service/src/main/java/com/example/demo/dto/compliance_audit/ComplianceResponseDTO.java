@@ -14,8 +14,6 @@ public class ComplianceResponseDTO {
 	private String subjectType; // PROJECT / PROGRAM / INCENTIVE
 	private Long subjectId;
 
-	private Long participantId;
-
 	private String result; // PASS / FAIL / NEEDS_REVIEW
 	private String auditStatus; // PENDING / VERIFIED / FLAGGED
 

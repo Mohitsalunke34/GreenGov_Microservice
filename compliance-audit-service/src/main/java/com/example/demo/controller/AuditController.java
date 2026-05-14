@@ -77,4 +77,10 @@ public class AuditController {
 
 		return ResponseEntity.ok(service.getByStatus(status));
 	}
+
+	// Get All Audits
+	@GetMapping("/all")
+	public ResponseEntity<List<AuditResponseDTO>> getAllAudits() {
+		return ResponseEntity.ok(service.getAllAudit());
+	}
 }

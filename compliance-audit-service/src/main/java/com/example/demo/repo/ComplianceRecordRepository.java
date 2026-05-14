@@ -10,7 +10,6 @@ import com.example.demo.model.Enums.ComplianceSubjectType;
 
 public interface ComplianceRecordRepository extends JpaRepository<ComplianceRecord, Long> {
 
-	List<ComplianceRecord> findByParticipantId(Long participantId);
 
 	List<ComplianceRecord> findBySubjectTypeAndSubjectId(ComplianceSubjectType subjectType, Long subjectId);
 
